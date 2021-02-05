@@ -6003,23 +6003,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\theje\\.nuget\\packages\\": {},
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
+    "C:\\Users\\joelb\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "F:\\Visual Studio Projects\\P3_LeagueManager\\UserService\\UserService\\UserService.csproj",
+      "projectUniqueName": "C:\\Users\\joelb\\Desktop\\revatureBatchDox\\P3\\P3_OutOfThePark\\UserService\\UserService\\UserService.csproj",
       "projectName": "UserService",
-      "projectPath": "F:\\Visual Studio Projects\\P3_LeagueManager\\UserService\\UserService\\UserService.csproj",
-      "packagesPath": "C:\\Users\\theje\\.nuget\\packages\\",
-      "outputPath": "F:\\Visual Studio Projects\\P3_LeagueManager\\UserService\\UserService\\obj\\",
+      "projectPath": "C:\\Users\\joelb\\Desktop\\revatureBatchDox\\P3\\P3_OutOfThePark\\UserService\\UserService\\UserService.csproj",
+      "packagesPath": "C:\\Users\\joelb\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\joelb\\Desktop\\revatureBatchDox\\P3\\P3_OutOfThePark\\UserService\\UserService\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-      ],
       "configFilePaths": [
-        "C:\\Users\\theje\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\joelb\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -6033,11 +6029,11 @@
         "net5.0": {
           "targetAlias": "net5.0",
           "projectReferences": {
-            "F:\\Visual Studio Projects\\P3_LeagueManager\\UserService\\Logic\\Service.csproj": {
-              "projectPath": "F:\\Visual Studio Projects\\P3_LeagueManager\\UserService\\Logic\\Service.csproj"
+            "C:\\Users\\joelb\\Desktop\\revatureBatchDox\\P3\\P3_OutOfThePark\\UserService\\Logic\\Service.csproj": {
+              "projectPath": "C:\\Users\\joelb\\Desktop\\revatureBatchDox\\P3\\P3_OutOfThePark\\UserService\\Logic\\Service.csproj"
             },
-            "F:\\Visual Studio Projects\\P3_LeagueManager\\UserService\\Models\\Model.csproj": {
-              "projectPath": "F:\\Visual Studio Projects\\P3_LeagueManager\\UserService\\Models\\Model.csproj"
+            "C:\\Users\\joelb\\Desktop\\revatureBatchDox\\P3\\P3_OutOfThePark\\UserService\\Models\\Model.csproj": {
+              "projectPath": "C:\\Users\\joelb\\Desktop\\revatureBatchDox\\P3\\P3_OutOfThePark\\UserService\\Models\\Model.csproj"
             }
           }
         }
@@ -6095,7 +6091,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.102\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.101\\RuntimeIdentifierGraph.json"
       }
     }
   }
