@@ -1,0 +1,11 @@
+F:\Visual Studio Projects\P3_LeagueManager\UserService\Models\bin\Debug\netcoreapp3.1\Model.deps.json
+F:\Visual Studio Projects\P3_LeagueManager\UserService\Models\bin\Debug\netcoreapp3.1\Model.runtimeconfig.json
+F:\Visual Studio Projects\P3_LeagueManager\UserService\Models\bin\Debug\netcoreapp3.1\Model.runtimeconfig.dev.json
+F:\Visual Studio Projects\P3_LeagueManager\UserService\Models\bin\Debug\netcoreapp3.1\Model.dll
+F:\Visual Studio Projects\P3_LeagueManager\UserService\Models\bin\Debug\netcoreapp3.1\Model.pdb
+F:\Visual Studio Projects\P3_LeagueManager\UserService\Models\obj\Debug\netcoreapp3.1\Model.AssemblyInfoInputs.cache
+F:\Visual Studio Projects\P3_LeagueManager\UserService\Models\obj\Debug\netcoreapp3.1\Model.AssemblyInfo.cs
+F:\Visual Studio Projects\P3_LeagueManager\UserService\Models\obj\Debug\netcoreapp3.1\Model.csproj.CoreCompileInputs.cache
+F:\Visual Studio Projects\P3_LeagueManager\UserService\Models\obj\Debug\netcoreapp3.1\Model.dll
+F:\Visual Studio Projects\P3_LeagueManager\UserService\Models\obj\Debug\netcoreapp3.1\Model.pdb
+F:\Visual Studio Projects\P3_LeagueManager\UserService\Models\obj\Debug\netcoreapp3.1\Model.genruntimeconfig.cache

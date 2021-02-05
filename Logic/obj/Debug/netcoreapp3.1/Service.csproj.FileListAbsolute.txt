@@ -1,0 +1,17 @@
+F:\Visual Studio Projects\P3_LeagueManager\UserService\Logic\bin\Debug\netcoreapp3.1\Service.deps.json
+F:\Visual Studio Projects\P3_LeagueManager\UserService\Logic\bin\Debug\netcoreapp3.1\Service.runtimeconfig.json
+F:\Visual Studio Projects\P3_LeagueManager\UserService\Logic\bin\Debug\netcoreapp3.1\Service.runtimeconfig.dev.json
+F:\Visual Studio Projects\P3_LeagueManager\UserService\Logic\bin\Debug\netcoreapp3.1\Service.dll
+F:\Visual Studio Projects\P3_LeagueManager\UserService\Logic\bin\Debug\netcoreapp3.1\Service.pdb
+F:\Visual Studio Projects\P3_LeagueManager\UserService\Logic\bin\Debug\netcoreapp3.1\Model.dll
+F:\Visual Studio Projects\P3_LeagueManager\UserService\Logic\bin\Debug\netcoreapp3.1\Repo.dll
+F:\Visual Studio Projects\P3_LeagueManager\UserService\Logic\bin\Debug\netcoreapp3.1\Model.pdb
+F:\Visual Studio Projects\P3_LeagueManager\UserService\Logic\bin\Debug\netcoreapp3.1\Repo.pdb
+F:\Visual Studio Projects\P3_LeagueManager\UserService\Logic\obj\Debug\netcoreapp3.1\Service.csprojAssemblyReference.cache
+F:\Visual Studio Projects\P3_LeagueManager\UserService\Logic\obj\Debug\netcoreapp3.1\Service.AssemblyInfoInputs.cache
+F:\Visual Studio Projects\P3_LeagueManager\UserService\Logic\obj\Debug\netcoreapp3.1\Service.AssemblyInfo.cs
+F:\Visual Studio Projects\P3_LeagueManager\UserService\Logic\obj\Debug\netcoreapp3.1\Service.csproj.CoreCompileInputs.cache
+F:\Visual Studio Projects\P3_LeagueManager\UserService\Logic\obj\Debug\netcoreapp3.1\Service.csproj.CopyComplete
+F:\Visual Studio Projects\P3_LeagueManager\UserService\Logic\obj\Debug\netcoreapp3.1\Service.dll
+F:\Visual Studio Projects\P3_LeagueManager\UserService\Logic\obj\Debug\netcoreapp3.1\Service.pdb
+F:\Visual Studio Projects\P3_LeagueManager\UserService\Logic\obj\Debug\netcoreapp3.1\Service.genruntimeconfig.cache

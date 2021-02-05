@@ -1,0 +1,5 @@
+F:\Visual Studio Projects\P3_LeagueManager\UserService\Logic\bin\Debug\netcoreapp3.1\Models.dll
+F:\Visual Studio Projects\P3_LeagueManager\UserService\Logic\bin\Debug\netcoreapp3.1\Repo.dll
+F:\Visual Studio Projects\P3_LeagueManager\UserService\Logic\obj\Debug\netcoreapp3.1\Logic.csprojAssemblyReference.cache
+F:\Visual Studio Projects\P3_LeagueManager\UserService\Logic\obj\Debug\netcoreapp3.1\Logic.AssemblyInfoInputs.cache
+F:\Visual Studio Projects\P3_LeagueManager\UserService\Logic\obj\Debug\netcoreapp3.1\Logic.AssemblyInfo.cs
