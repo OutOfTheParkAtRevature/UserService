@@ -2,7 +2,6 @@ F:\Visual Studio Projects\P3_LeagueManager\UserService\UserService\bin\Debug\net
 F:\Visual Studio Projects\P3_LeagueManager\UserService\UserService\bin\Debug\net5.0\Swashbuckle.AspNetCore.Swagger.dll
 F:\Visual Studio Projects\P3_LeagueManager\UserService\UserService\bin\Debug\net5.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 F:\Visual Studio Projects\P3_LeagueManager\UserService\UserService\bin\Debug\net5.0\Swashbuckle.AspNetCore.SwaggerUI.dll
-F:\Visual Studio Projects\P3_LeagueManager\UserService\UserService\bin\Debug\net5.0\Repo.dll
 F:\Visual Studio Projects\P3_LeagueManager\UserService\UserService\obj\Debug\net5.0\UserService.csprojAssemblyReference.cache
 F:\Visual Studio Projects\P3_LeagueManager\UserService\UserService\obj\Debug\net5.0\UserService.GeneratedMSBuildEditorConfig.editorconfig
 F:\Visual Studio Projects\P3_LeagueManager\UserService\UserService\obj\Debug\net5.0\UserService.AssemblyInfoInputs.cache
@@ -24,7 +23,6 @@ F:\Visual Studio Projects\P3_LeagueManager\UserService\UserService\bin\Debug\net
 F:\Visual Studio Projects\P3_LeagueManager\UserService\UserService\bin\Debug\net5.0\Microsoft.IdentityModel.Protocols.dll
 F:\Visual Studio Projects\P3_LeagueManager\UserService\UserService\bin\Debug\net5.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 F:\Visual Studio Projects\P3_LeagueManager\UserService\UserService\bin\Debug\net5.0\Microsoft.IdentityModel.Tokens.dll
-F:\Visual Studio Projects\P3_LeagueManager\UserService\UserService\bin\Debug\net5.0\Newtonsoft.Json.dll
 F:\Visual Studio Projects\P3_LeagueManager\UserService\UserService\bin\Debug\net5.0\System.Configuration.ConfigurationManager.dll
 F:\Visual Studio Projects\P3_LeagueManager\UserService\UserService\bin\Debug\net5.0\System.IdentityModel.Tokens.Jwt.dll
 F:\Visual Studio Projects\P3_LeagueManager\UserService\UserService\bin\Debug\net5.0\System.Runtime.Caching.dll
@@ -56,7 +54,6 @@ F:\Visual Studio Projects\P3_LeagueManager\UserService\UserService\bin\Debug\net
 F:\Visual Studio Projects\P3_LeagueManager\UserService\UserService\bin\Debug\net5.0\Service.dll
 F:\Visual Studio Projects\P3_LeagueManager\UserService\UserService\bin\Debug\net5.0\Service.pdb
 F:\Visual Studio Projects\P3_LeagueManager\UserService\UserService\bin\Debug\net5.0\Model.pdb
-F:\Visual Studio Projects\P3_LeagueManager\UserService\UserService\bin\Debug\net5.0\Repo.pdb
 F:\Visual Studio Projects\P3_LeagueManager\UserService\UserService\obj\Debug\net5.0\UserService.csproj.CoreCompileInputs.cache
 F:\Visual Studio Projects\P3_LeagueManager\UserService\UserService\obj\Debug\net5.0\UserService.MvcApplicationPartsAssemblyInfo.cs
 F:\Visual Studio Projects\P3_LeagueManager\UserService\UserService\obj\Debug\net5.0\UserService.MvcApplicationPartsAssemblyInfo.cache
@@ -65,3 +62,11 @@ F:\Visual Studio Projects\P3_LeagueManager\UserService\UserService\obj\Debug\net
 F:\Visual Studio Projects\P3_LeagueManager\UserService\UserService\obj\Debug\net5.0\ref\UserService.dll
 F:\Visual Studio Projects\P3_LeagueManager\UserService\UserService\obj\Debug\net5.0\UserService.pdb
 F:\Visual Studio Projects\P3_LeagueManager\UserService\UserService\obj\Debug\net5.0\UserService.genruntimeconfig.cache
+F:\Visual Studio Projects\P3_LeagueManager\UserService\UserService\bin\Debug\net5.0\Microsoft.AspNetCore.Cryptography.Internal.dll
+F:\Visual Studio Projects\P3_LeagueManager\UserService\UserService\bin\Debug\net5.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+F:\Visual Studio Projects\P3_LeagueManager\UserService\UserService\bin\Debug\net5.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+F:\Visual Studio Projects\P3_LeagueManager\UserService\UserService\bin\Debug\net5.0\Microsoft.Extensions.Identity.Core.dll
+F:\Visual Studio Projects\P3_LeagueManager\UserService\UserService\bin\Debug\net5.0\Microsoft.Extensions.Identity.Stores.dll
+F:\Visual Studio Projects\P3_LeagueManager\UserService\UserService\bin\Debug\net5.0\Repository.dll
+F:\Visual Studio Projects\P3_LeagueManager\UserService\UserService\bin\Debug\net5.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+F:\Visual Studio Projects\P3_LeagueManager\UserService\UserService\bin\Debug\net5.0\Repository.pdb

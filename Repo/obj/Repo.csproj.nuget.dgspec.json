@@ -1,20 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\joelb\\Desktop\\revatureBatchDox\\P3\\P3_OutOfThePark\\UserService\\Repo\\Repo.csproj": {}
+    "F:\\Visual Studio Projects\\P3_LeagueManager\\UserService\\Repo\\Repo.csproj": {}
   },
   "projects": {
-    "C:\\Users\\joelb\\Desktop\\revatureBatchDox\\P3\\P3_OutOfThePark\\UserService\\Models\\Model.csproj": {
+    "F:\\Visual Studio Projects\\P3_LeagueManager\\UserService\\Models\\Model.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\joelb\\Desktop\\revatureBatchDox\\P3\\P3_OutOfThePark\\UserService\\Models\\Model.csproj",
+        "projectUniqueName": "F:\\Visual Studio Projects\\P3_LeagueManager\\UserService\\Models\\Model.csproj",
         "projectName": "Model",
-        "projectPath": "C:\\Users\\joelb\\Desktop\\revatureBatchDox\\P3\\P3_OutOfThePark\\UserService\\Models\\Model.csproj",
-        "packagesPath": "C:\\Users\\joelb\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\joelb\\Desktop\\revatureBatchDox\\P3\\P3_OutOfThePark\\UserService\\Models\\obj\\",
+        "projectPath": "F:\\Visual Studio Projects\\P3_LeagueManager\\UserService\\Models\\Model.csproj",
+        "packagesPath": "C:\\Users\\theje\\.nuget\\packages\\",
+        "outputPath": "F:\\Visual Studio Projects\\P3_LeagueManager\\UserService\\Models\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "C:\\Users\\joelb\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\theje\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -40,6 +43,14 @@
         "netcoreapp3.1": {
           "targetAlias": "netcoreapp3.1",
           "dependencies": {
+            "Microsoft.AspNetCore.Identity": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[5.0.2, )"
+            },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
               "version": "[5.0.2, )"
@@ -76,21 +87,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.102\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\joelb\\Desktop\\revatureBatchDox\\P3\\P3_OutOfThePark\\UserService\\Repo\\Repo.csproj": {
+    "F:\\Visual Studio Projects\\P3_LeagueManager\\UserService\\Repo\\Repo.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\joelb\\Desktop\\revatureBatchDox\\P3\\P3_OutOfThePark\\UserService\\Repo\\Repo.csproj",
+        "projectUniqueName": "F:\\Visual Studio Projects\\P3_LeagueManager\\UserService\\Repo\\Repo.csproj",
         "projectName": "Repo",
-        "projectPath": "C:\\Users\\joelb\\Desktop\\revatureBatchDox\\P3\\P3_OutOfThePark\\UserService\\Repo\\Repo.csproj",
-        "packagesPath": "C:\\Users\\joelb\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\joelb\\Desktop\\revatureBatchDox\\P3\\P3_OutOfThePark\\UserService\\Repo\\obj\\",
+        "projectPath": "F:\\Visual Studio Projects\\P3_LeagueManager\\UserService\\Repo\\Repo.csproj",
+        "packagesPath": "C:\\Users\\theje\\.nuget\\packages\\",
+        "outputPath": "F:\\Visual Studio Projects\\P3_LeagueManager\\UserService\\Repo\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "C:\\Users\\joelb\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\theje\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -104,8 +118,8 @@
           "netcoreapp3.1": {
             "targetAlias": "netcoreapp3.1",
             "projectReferences": {
-              "C:\\Users\\joelb\\Desktop\\revatureBatchDox\\P3\\P3_OutOfThePark\\UserService\\Models\\Model.csproj": {
-                "projectPath": "C:\\Users\\joelb\\Desktop\\revatureBatchDox\\P3\\P3_OutOfThePark\\UserService\\Models\\Model.csproj"
+              "F:\\Visual Studio Projects\\P3_LeagueManager\\UserService\\Models\\Model.csproj": {
+                "projectPath": "F:\\Visual Studio Projects\\P3_LeagueManager\\UserService\\Models\\Model.csproj"
               }
             }
           }
@@ -120,6 +134,14 @@
         "netcoreapp3.1": {
           "targetAlias": "netcoreapp3.1",
           "dependencies": {
+            "Microsoft.AspNetCore.Identity": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[5.0.2, )"
+            },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
               "version": "[5.0.2, )"
@@ -156,7 +178,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.102\\RuntimeIdentifierGraph.json"
         }
       }
     }
