@@ -36,6 +36,9 @@ namespace UserService
         {
             services.AddScoped<JwtHandler>();
             services.AddScoped<UserContext>();
+            services.AddScoped<Logic>();
+            services.AddScoped<Mapper>();
+            services.AddScoped<Repo>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
