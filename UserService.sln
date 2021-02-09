@@ -5,11 +5,11 @@ VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserService", "UserService\UserService.csproj", "{A0F62A1D-1D33-415C-AECD-5AB66BD6C51D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service", "Logic\Service.csproj", "{F75C6DDD-58FC-455B-AEE3-16EBCD3C9B79}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service", "Service\Service.csproj", "{F75C6DDD-58FC-455B-AEE3-16EBCD3C9B79}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Model", "Models\Model.csproj", "{5A6C13C9-52D4-4732-A939-A43630F7FF5B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repo", "Repo\Repo.csproj", "{55E29CE6-E268-449D-B38E-61CA319A2C11}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repository", "Repo\Repository.csproj", "{55E29CE6-E268-449D-B38E-61CA319A2C11}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserService.Tests", "UserService.Tests\UserService.Tests.csproj", "{7FD44FB2-6AAB-4398-87EA-01A29F67B6C8}"
 EndProject

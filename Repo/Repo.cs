@@ -8,36 +8,36 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Repo
+namespace Repository
 {
     public class Repo
     {
-        private readonly ProgContext _progContext;
+        private readonly UserContext _userContext;
         private readonly ILogger _logger;
-        public DbSet<User> users;
+        public DbSet<User> Users;
 
 
-        public Repo(ProgContext progContext, ILogger<Repo> logger)
+        public Repo(UserContext userContext, ILogger<Repo> logger)
         {
-            _progContext = progContext;
+            _userContext = userContext;
             _logger = logger;
-            this.users = _progContext.Users;
+            this.Users = _userContext.Users;
         }
 
         // Access SaveChanges from Logic class
         public async Task CommitSave()
         {
-            await _progContext.SaveChangesAsync();
+            await _userContext.SaveChangesAsync();
         }
         // Context accessors
         public async Task<IEnumerable<User>> GetUsers()
         {
-            List<User> uList = await users.ToListAsync();
+            List<User> uList = await Users.ToListAsync();
             return uList;
         }
-        public async Task<User> GetUserById(Guid id)
+        public async Task<User> GetUserById(string id)
         {
-            return await users.FindAsync(id);
+            return await Users.FindAsync(id);
         }
     }
 }
