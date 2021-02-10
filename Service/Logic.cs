@@ -207,7 +207,7 @@ namespace Service
                 await _userManager.AddToRoleAsync(tUser, editUserDto.RoleName);
                 tUser.RoleName = editUserDto.RoleName;
             }
-            if (tUser.TeamID != editUserDto.TeamID && editUserDto.TeamID != 0) { tUser.TeamID = editUserDto.TeamID }
+            if (tUser.TeamID != editUserDto.TeamID && editUserDto.TeamID != 0) { tUser.TeamID = editUserDto.TeamID; }
 
             await _repo.CommitSave();
             return tUser;
