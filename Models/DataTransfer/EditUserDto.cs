@@ -11,13 +11,20 @@ namespace Models.DataTransfer
     public class EditUserDto
     {
         public string FullName { get; set; }
+
         [DisplayName("Email Address")]
         [DataType(DataType.EmailAddress)]
         [EmailAddress(ErrorMessage = "Email must be a valid email address")]
         public string Email { get; set; }
+
         [DataType(DataType.Password)]
-        public string Password { get; set; }
+        public string OldPassword { get; set; }
+
+        [DataType(DataType.Password)]
+        public string NewPassword { get; set; }
+
         [DataType(DataType.PhoneNumber)]
         public string PhoneNumber { get; set; }
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using Models;
+﻿using Model;
+using Models;
 using Models.DataTransfer;
 using System;
 using System.Collections.Generic;
@@ -35,6 +36,19 @@ namespace Service
                 RoleID = user.RoleID
             };
             return convertedUser;
+        }
+
+        public string RoleIDtoRole(int RoleID)
+        {
+            switch (RoleID)
+            {
+                case 2: return Roles.PT;
+                case 3: return Roles.AC;
+                case 4: return Roles.HC;
+                case 5: return Roles.LM;
+                case 6: return Roles.A;
+                default: return Roles.PL;
+            }
         }
     }
 }

@@ -1,12 +1,15 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Model;
 using Model.DataTransfer;
 using Models;
 using Models.DataTransfer;
 using Repository;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,15 +21,41 @@ namespace Service
         private readonly Repo _repo;
         private readonly Mapper _mapper;
         private readonly UserManager<User> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly JwtHandler _jwtHandler;
         private readonly ILogger<Repo> _logger;
 
-        public Logic(Repo repo, UserManager<User> userManager, Mapper mapper, JwtHandler jwtHandler, ILogger<Repo> logger)
+        public Logic(Repo repo, UserManager<User> userManager, Mapper mapper, JwtHandler jwtHandler, ILogger<Repo> logger, RoleManager<IdentityRole> roleManager)
         {
             _repo = repo;
             _mapper = mapper;
             _logger = logger;
             _jwtHandler = jwtHandler;
+            _roleManager = roleManager;
+        }
+
+        /// <summary>
+        /// Takes user input, creates authentication data
+        /// </summary>
+        /// <param name="User">User info sent from controller</param>
+        /// <returns>AuthResponseDto</returns>
+        /// 
+        public async Task<AuthResponseDto> LoginUser(User user)
+        {
+            var signingCredentials = _jwtHandler.GetSigningCredentials();
+            var claims = _jwtHandler.GetClaims(user);
+
+            claims.Add(new Claim(ClaimTypes.Name, user.UserName));
+
+            var userRoles = await _userManager.GetRolesAsync(user);
+            foreach (var userRole in userRoles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, userRole));
+            }
+
+            var tokenOptions = _jwtHandler.GenerateTokenOptions(signingCredentials, claims);
+            var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+            return new AuthResponseDto { IsAuthSuccessful = true, Token = token };
         }
         
         /// <summary>
@@ -38,6 +67,7 @@ namespace Service
         {
             return await _repo.GetUserById(id);
         }
+
         /// <summary>
         /// Gets list of Users 
         /// </summary>
@@ -53,11 +83,43 @@ namespace Service
             }
             return userDtos;
         }
+
         /// <summary>
-        /// Takes user input, creates authentication data
+        /// Takes CreateUserDto from controller, creates a user, creates roles if they don't exists,
+        /// adds user to the specified role and returns a UserLoggedInDto
         /// </summary>
-        /// <param name="createUser">User info sent from controller</param>
+        /// <param name="cud"></param>
         /// <returns>UserLoggedInDto</returns>
+        public async Task<UserLoggedInDto> CreateUser(CreateUserDto cud)
+        {
+            if (!await _roleManager.RoleExistsAsync(Roles.A))
+            {
+                await _roleManager.CreateAsync(new IdentityRole(Roles.A));
+                await _roleManager.CreateAsync(new IdentityRole(Roles.LM));
+                await _roleManager.CreateAsync(new IdentityRole(Roles.HC));
+                await _roleManager.CreateAsync(new IdentityRole(Roles.AC));
+                await _roleManager.CreateAsync(new IdentityRole(Roles.PT));
+                await _roleManager.CreateAsync(new IdentityRole(Roles.PL));
+            }
+
+            User user = new User
+            {
+                FullName = cud.FullName,
+                PhoneNumber = cud.PhoneNumber,
+                Email = cud.Email,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                UserName = cud.UserName,
+                RoleID = cud.RoleID,
+                TeamID = cud.TeamID,
+            };
+            await _userManager.CreateAsync(user, cud.Password);
+            string role = _mapper.RoleIDtoRole(cud.RoleID);
+
+            await _userManager.AddToRoleAsync(user, role);
+
+            return _mapper.ConvertUserToUserLoggedInDto(user);
+        }
+
         
         /// <summary>
         /// Checks if user or email already exists in DB
@@ -157,10 +219,12 @@ namespace Service
         public async Task<User> EditUser(string userId, EditUserDto editUserDto)
         {
             User tUser = await GetUserById(userId);
+
             if (tUser.FullName != editUserDto.FullName && editUserDto.FullName != "") { tUser.FullName = editUserDto.FullName; }
-            if (tUser.Email != editUserDto.Email && editUserDto.Email != "") { tUser.Email = editUserDto.Email; }
-            if (tUser.Password != editUserDto.Password && editUserDto.Password != "") { tUser.Password = editUserDto.Password; }
+            if (tUser.Email != editUserDto.Email && editUserDto.Email != "") { tUser.Email = editUserDto.Email; tUser.NormalizedEmail = editUserDto.Email.ToUpper(); }
             if (tUser.PhoneNumber != editUserDto.PhoneNumber && editUserDto.PhoneNumber != "") { tUser.PhoneNumber = editUserDto.PhoneNumber; }
+            if (!string.IsNullOrEmpty(editUserDto.OldPassword) && !string.IsNullOrEmpty(editUserDto.NewPassword)) { await _userManager.ChangePasswordAsync(tUser, editUserDto.OldPassword, editUserDto.NewPassword); }
+
             await _repo.CommitSave();
             return tUser;
         }
