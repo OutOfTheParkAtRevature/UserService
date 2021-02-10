@@ -5,12 +5,13 @@ using Models;
 
 namespace Repository
 {
-    public class UserContext : IdentityDbContext<User>
+    public class UserContext : IdentityDbContext
     {
-        //public DbSet<User> Users { get; set; }
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
 
         public UserContext() { }
 
         public UserContext(DbContextOptions<UserContext> options) : base(options) { }
+
     }
 }
