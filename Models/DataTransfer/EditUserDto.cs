@@ -26,5 +26,9 @@ namespace Models.DataTransfer
         [DataType(DataType.PhoneNumber)]
         public string PhoneNumber { get; set; }
 
+        public int TeamID { get; set; }
+
+        public string RoleName { get; set; }
+
     }
 }

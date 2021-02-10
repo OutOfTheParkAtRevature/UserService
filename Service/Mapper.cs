@@ -9,7 +9,7 @@ namespace Service
 {
     public class Mapper
     {
-        public UserDto ConvertUserToUserDto(User user)
+        public UserDto ConvertUserToUserDto(ApplicationUser user)
         {
             UserDto convertedUser = new UserDto()
             {
@@ -19,11 +19,11 @@ namespace Service
                 PhoneNumber = user.PhoneNumber,
                 Email = user.Email,
                 TeamID = user.TeamID,
-                RoleID = user.RoleID
+                RoleName = user.RoleName
             };
             return convertedUser;
         }
-        public UserLoggedInDto ConvertUserToUserLoggedInDto(User user)
+        public UserLoggedInDto ConvertUserToUserLoggedInDto(ApplicationUser user)
         {
             UserLoggedInDto convertedUser = new UserLoggedInDto()
             {
@@ -33,22 +33,9 @@ namespace Service
                 PhoneNumber = user.PhoneNumber,
                 Email = user.Email,
                 TeamID = user.TeamID,
-                RoleID = user.RoleID
+                RoleName = user.RoleName
             };
             return convertedUser;
-        }
-
-        public string RoleIDtoRole(int RoleID)
-        {
-            switch (RoleID)
-            {
-                case 2: return Roles.PT;
-                case 3: return Roles.AC;
-                case 4: return Roles.HC;
-                case 5: return Roles.LM;
-                case 6: return Roles.A;
-                default: return Roles.PL;
-            }
         }
     }
 }

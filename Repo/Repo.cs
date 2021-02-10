@@ -14,14 +14,14 @@ namespace Repository
     {
         private readonly UserContext _userContext;
         private readonly ILogger _logger;
-        public DbSet<User> Users;
+        public DbSet<ApplicationUser> Users;
 
 
         public Repo(UserContext userContext, ILogger<Repo> logger)
         {
             _userContext = userContext;
             _logger = logger;
-            this.Users = _userContext.Users;
+            this.Users = _userContext.ApplicationUsers;
         }
 
         // Access SaveChanges from Logic class
@@ -30,12 +30,12 @@ namespace Repository
             await _userContext.SaveChangesAsync();
         }
         // Context accessors
-        public async Task<IEnumerable<User>> GetUsers()
+        public async Task<IEnumerable<ApplicationUser>> GetUsers()
         {
-            List<User> uList = await Users.ToListAsync();
+            List<ApplicationUser> uList = await Users.ToListAsync();
             return uList;
         }
-        public async Task<User> GetUserById(string id)
+        public async Task<ApplicationUser> GetUserById(string id)
         {
             return await Users.FindAsync(id);
         }

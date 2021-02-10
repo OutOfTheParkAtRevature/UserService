@@ -18,14 +18,14 @@ namespace UserService
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly UserManager<User> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly Mapper _mapper;
         private readonly JwtHandler _jwtHandler;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly Logic _logic;
         private readonly ILogger<UserController> _logger;
 
-        public UserController(UserManager<User> userManager, Mapper mapper, JwtHandler jwtHandler, RoleManager<IdentityRole> roleManager, Logic logic, ILogger<UserController> logger)
+        public UserController(UserManager<ApplicationUser> userManager, Mapper mapper, JwtHandler jwtHandler, RoleManager<IdentityRole> roleManager, Logic logic, ILogger<UserController> logger)
         {
             _userManager = userManager;
             _mapper = mapper;
@@ -46,13 +46,13 @@ namespace UserService
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] UserForAuthenticationDto userForAuthentication)
+        public async Task<IActionResult> Login([FromBody] LoginDto userForAuthentication)
         {
-            var user = await _userManager.FindByNameAsync(userForAuthentication.Email);
+            var user = await _userManager.FindByNameAsync(userForAuthentication.UserName);
             if (user == null || !await _userManager.CheckPasswordAsync(user, userForAuthentication.Password))
-                return Unauthorized(new AuthResponseDto { ErrorMessage = "Invalid Authentication" });
+                return Unauthorized(new AuthResponseDto { IsAuthSuccessful = false, ErrorMessage = "Invalid Authentication" }) ;
 
-            return Ok(_logic.LoginUser(user));
+            return Ok(await _logic.LoginUser(user));
         }
 
         [HttpGet]
@@ -92,14 +92,14 @@ namespace UserService
 
 
         [HttpPut("edit/{id}")]
-        public async Task<ActionResult<User>> EditUser(string id, EditUserDto editedUser)
+        public async Task<ActionResult<ApplicationUser>> EditUser(string id, EditUserDto editedUser)
         {
             return await _logic.EditUser(id, editedUser);
         }
 
 
         [HttpDelete("delete/{id}")]
-        public async Task<User> DeleteUser(string id)
+        public async Task<ApplicationUser> DeleteUser(string id)
         {
             _logger.LogInformation("User deleted.");
             return await _logic.DeleteUser(id);
