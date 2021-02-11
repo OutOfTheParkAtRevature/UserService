@@ -1,4 +1,5 @@
-﻿using Models;
+﻿using Model;
+using Models;
 using Models.DataTransfer;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ namespace Service
 {
     public class Mapper
     {
-        public UserDto ConvertUserToUserDto(User user)
+        public UserDto ConvertUserToUserDto(ApplicationUser user)
         {
             UserDto convertedUser = new UserDto()
             {
@@ -18,11 +19,11 @@ namespace Service
                 PhoneNumber = user.PhoneNumber,
                 Email = user.Email,
                 TeamID = user.TeamID,
-                RoleID = user.RoleID
+                RoleName = user.RoleName
             };
             return convertedUser;
         }
-        public UserLoggedInDto ConvertUserToUserLoggedInDto(User user)
+        public UserLoggedInDto ConvertUserToUserLoggedInDto(ApplicationUser user)
         {
             UserLoggedInDto convertedUser = new UserLoggedInDto()
             {
@@ -32,7 +33,7 @@ namespace Service
                 PhoneNumber = user.PhoneNumber,
                 Email = user.Email,
                 TeamID = user.TeamID,
-                RoleID = user.RoleID
+                RoleName = user.RoleName
             };
             return convertedUser;
         }

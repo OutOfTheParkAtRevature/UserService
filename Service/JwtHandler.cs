@@ -27,7 +27,7 @@ namespace Service
             var secret = new SymmetricSecurityKey(key);
             return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
         }
-        public List<Claim> GetClaims(User user)
+        public List<Claim> GetClaims(ApplicationUser user)
         {
             var claims = new List<Claim>
         {

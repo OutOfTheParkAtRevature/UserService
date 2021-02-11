@@ -25,7 +25,7 @@ namespace Models.DataTransfer
         public string Email { get; set; }
         [DisplayName("Team ID")]
         public int TeamID { get; set; }
-        [DisplayName("Role ID")]
-        public int RoleID { get; set; }
+        [DisplayName("Role Name")]
+        public string RoleName { get; set; }
     }
 }

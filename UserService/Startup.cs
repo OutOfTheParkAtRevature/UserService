@@ -46,7 +46,7 @@ namespace UserService
             });
 
             services.AddDbContext<UserContext>(options => options.UseSqlServer(Configuration.GetConnectionString("LocalDB")));
-            services.AddIdentity<User, IdentityRole>
+            services.AddIdentity<ApplicationUser, IdentityRole>
                 (options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<UserContext>()
                 .AddDefaultTokenProviders();
@@ -69,6 +69,7 @@ namespace UserService
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.GetSection("securityKey").Value))
                 };
             });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
