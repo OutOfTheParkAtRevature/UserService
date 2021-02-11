@@ -23,7 +23,7 @@ namespace Models.DataTransfer
         [EmailAddress(ErrorMessage = "Email must be a valid email address")]
         public string Email { get; set; }
         [DisplayName("Team ID")]
-        public int TeamID { get; set; }
+        public Guid TeamID { get; set; }
         [DisplayName("Role Name")]
         public string RoleName { get; set; }
     }

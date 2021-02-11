@@ -17,7 +17,7 @@ namespace Models
 
         [DisplayName("Team ID")]
         [ForeignKey("TeamID")]
-        public int TeamID { get; set; }
+        public Guid TeamID { get; set; }
         [DisplayName("Role Name")]
         [ForeignKey("Name")]
         public string RoleName { get; set; }
