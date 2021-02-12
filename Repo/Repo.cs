@@ -39,5 +39,10 @@ namespace Repository
         {
             return await Users.FindAsync(id);
         }
+
+        public async Task<ApplicationUser> GetUserByUsername(string username)
+        {
+            return await Users.FirstOrDefaultAsync(x => x.UserName == username);
+        }
     }
 }
