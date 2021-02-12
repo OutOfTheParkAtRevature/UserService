@@ -1,4 +1,5 @@
 using Models;
+using Model.DataTransfer;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -29,17 +30,16 @@ namespace Model.Tests
         [Fact]
         public void ValidateUser()
         {
-            var user = new User
+            var user = new ApplicationUser
             {
                 Id = "13265262",
                 UserName = "jerry",
-                Password = "jerryrice",
                 PasswordHash="jerryricehashed",
                 FullName = "Jerry Rice",
                 PhoneNumber = "111-111-1111",
                 Email = "jerryrice@gmail.com",
-                TeamID = 1,
-                RoleID = 1,
+                TeamID = Guid.NewGuid(),
+                RoleName=Roles.HC,
                 StatLineID = Guid.NewGuid()
             };
 
@@ -47,48 +47,38 @@ namespace Model.Tests
             Assert.Equal(0, errorcount);
         }
 
+
+
+        /// <summary>
+        /// Validates the authentication; dto works with proper data
+        /// </summary>
+        [Fact]
+        public void ValidateUserForAuthenticationDto()
+        {
+            var authentication = new UserForAuthenticationDto
+            {
+                Email="something@email.com",
+                Password="somethingSecure"
+            };
+
+            var errorcount = ValidateModel(authentication).Count;
+            Assert.Equal(0, errorcount);
+        }
         /// <summary>
         /// Makes sure the User Model doesn't accept invalid data
         /// </summary>
         [Fact]
-        public void InvalidateUser()
+        public void InvalidateUserForAuthenticationDto()
         {
-            //invalid email
-            var user = new User
+            var authentication = new UserForAuthenticationDto
             {
-                Id = "13265262",
-                UserName = "jerry",
-                Password = "jerryrice",
-                PasswordHash = "jerryricehashed",
-                FullName = "Jerry Rice",
-                PhoneNumber = "111-111-1111",
-                Email = "1234",
-                TeamID = 1,
-                RoleID = 1,
-                StatLineID = Guid.NewGuid()
             };
 
-
-            var results = ValidateModel(user);
+            var results = ValidateModel(authentication);
             Assert.True(results.Count > 0);
             Assert.Contains(results, v => v.MemberNames.Contains("Email"));
+            Assert.Contains(results, v => v.MemberNames.Contains("Password"));
         }
 
-        /// <summary>
-        /// Makes sure Role Model works with valid data
-        /// </summary>
-        [Fact]
-        public void ValidateRole()
-        {
-            var role = new Role()
-            {
-                
-                Id = "1543523543",
-                Name = "Coach",
-            };
-
-            var results = ValidateModel(role);
-            Assert.True(results.Count == 0);
-        }
     }
 }
