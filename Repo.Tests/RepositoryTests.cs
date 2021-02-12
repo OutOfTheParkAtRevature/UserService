@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Abstractions;
+using Model;
 using Models;
 using System;
 using Xunit;
@@ -26,17 +27,16 @@ namespace Repository.Tests
 
                 Repo r = new Repo(context, new NullLogger<Repo>());
 
-                var user = new User
+                var user = new ApplicationUser
                 {
                     Id = "13265262",
                     UserName = "jerry",
-                    Password = "jerryrice",
                     PasswordHash = "jerryricehashed",
                     FullName = "Jerry Rice",
                     PhoneNumber = "111-111-1111",
                     Email = "jerryrice@gmail.com",
-                    TeamID = 1,
-                    RoleID = 1,
+                    TeamID = Guid.NewGuid(),
+                    RoleName = Roles.HC,
                     StatLineID = Guid.NewGuid()
                 };
                 //add user to db
@@ -70,17 +70,16 @@ namespace Repository.Tests
 
                 Repo r = new Repo(context, new NullLogger<Repo>());
 
-                var user = new User
+                var user = new ApplicationUser
                 {
                     Id = "13265262",
                     UserName = "jerry",
-                    Password = "jerryrice",
                     PasswordHash = "jerryricehashed",
                     FullName = "Jerry Rice",
                     PhoneNumber = "111-111-1111",
                     Email = "jerryrice@gmail.com",
-                    TeamID = 1,
-                    RoleID = 1,
+                    TeamID = Guid.NewGuid(),
+                    RoleName = Roles.HC,
                     StatLineID = Guid.NewGuid()
                 };
                 //add user to db
@@ -108,17 +107,16 @@ namespace Repository.Tests
             .UseInMemoryDatabase(databaseName: "p2newsetuptest2")
             .Options;
 
-            var user = new User
+            var user = new ApplicationUser
             {
                 Id = "13265262",
                 UserName = "jerry",
-                Password = "jerryrice",
                 PasswordHash = "jerryricehashed",
                 FullName = "Jerry Rice",
                 PhoneNumber = "111-111-1111",
                 Email = "jerryrice@gmail.com",
-                TeamID = 1,
-                RoleID = 1,
+                TeamID = Guid.NewGuid(),
+                RoleName = Roles.HC,
                 StatLineID = Guid.NewGuid()
             };
 
