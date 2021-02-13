@@ -45,15 +45,11 @@ namespace Service
         {
             var signingCredentials = _jwtHandler.GetSigningCredentials();
             var claims = _jwtHandler.GetClaims(user);
-
-            claims.Add(new Claim(ClaimTypes.Name, user.UserName));
-
             var userRoles = await _userManager.GetRolesAsync(user);
             foreach (var userRole in userRoles)
             {
                 claims.Add(new Claim(ClaimTypes.Role, userRole));
             }
-
             var tokenOptions = _jwtHandler.GenerateTokenOptions(signingCredentials, claims);
             var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
             UserLoggedInDto uld = _mapper.ConvertUserToUserLoggedInDto(user);
@@ -64,7 +60,8 @@ namespace Service
 
         /// <summary>
         /// Takes CreateUserDto from controller, creates a user, creates roles if they don't exists,
-        /// adds user to the specified role and returns a UserLoggedInDto
+        /// adds user to Player role, sends a notification to an admin user to approve their originally requested role and 
+        /// returns a UserLoggedInDto
         /// </summary>
         /// <param name="cud"></param>
         /// <returns>UserLoggedInDto</returns>
@@ -115,6 +112,40 @@ namespace Service
         }
 
         /// <summary>
+        /// Gets the user with the specified username
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
+        public async Task<ApplicationUser> GeUserByUsername(string username)
+        {
+            return await _repo.GetUserByUsername(username);
+        }
+
+        /// <summary>
+        /// Gets the role of a user with the specified user Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<string> GetUserRole(string id)
+        {
+            ApplicationUser user = await GetUserById(id);
+            return user.RoleName;
+        }
+
+
+        /// <summary>
+        /// Get the logged in User Id
+        /// </summary>
+        /// <param name="claimsIdentity"></param>
+        /// <returns></returns>
+        public async Task<string> GetLoggedInUserId(ClaimsIdentity claimsIdentity)
+        {
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            ApplicationUser user = await GeUserByUsername(claim.Value);
+            return user.Id;
+        }
+
+        /// <summary>
         /// Gets list of Users 
         /// </summary>
         /// <returns>List<UserDto></UserDto></returns>
@@ -153,11 +184,11 @@ namespace Service
         
         
         /// <summary>
-        /// Delete user from context by ID
+        /// Delete user from context by ID and return true if user deleted, false if not
         /// </summary>
         /// <param name="id">UserID</param>
-        /// <returns>deleted User</returns>
-        public async Task<ApplicationUser> DeleteUser(string id)
+        /// <returns>bool</returns>
+        public async Task<bool> DeleteUser(string id)
         {
             ApplicationUser user = await GetUserById(id);
             if (user != null)
@@ -165,13 +196,15 @@ namespace Service
                 _repo.Users.Remove(user);
                 await _repo.CommitSave();
                 _logger.LogInformation("User removed");
+                return true;
             }
             else
             {
                 _logger.LogInformation("User not found");
+                return false;
             }
-            return user;
         }
+
         /// <summary>
         /// Add user Role to User by ID
         /// </summary>
@@ -199,7 +232,7 @@ namespace Service
             ApplicationUser tUser = await GetUserById(userId);
 
             if (tUser.FullName != editUserDto.FullName && editUserDto.FullName != "") { tUser.FullName = editUserDto.FullName; }
-            if (tUser.Email != editUserDto.Email && editUserDto.Email != "") { tUser.Email = editUserDto.Email; tUser.NormalizedEmail = editUserDto.Email.ToUpper(); }
+            if (tUser.Email != editUserDto.Email && !string.IsNullOrEmpty(editUserDto.Email)) { tUser.Email = editUserDto.Email; tUser.NormalizedEmail = editUserDto.Email.ToUpper(); }
             if (tUser.PhoneNumber != editUserDto.PhoneNumber && editUserDto.PhoneNumber != "") { tUser.PhoneNumber = editUserDto.PhoneNumber; }
             if (!string.IsNullOrEmpty(editUserDto.OldPassword) && !string.IsNullOrEmpty(editUserDto.NewPassword)) { await _userManager.ChangePasswordAsync(tUser, editUserDto.OldPassword, editUserDto.NewPassword); }
             if (tUser.RoleName != editUserDto.RoleName && editUserDto.RoleName != "") { 
@@ -212,22 +245,34 @@ namespace Service
             await _repo.CommitSave();
             return tUser;
         }
+
+
         /// <summary>
-        /// Same as above, more options for higher user level
+        /// Checks to see if the logged in user is allowed to alter a given user:
+        /// Admins can alter all users besides other Admins.
+        /// League Managers can alter all users besides Admins and other League Managers.
+        /// Head Coaches can alter Assitant Coaches, Parents and Players.
+        /// Assistant Coaches, Parents and Players can't alter other users.
         /// </summary>
-        /// <param name="userId">User to edit</param>
-        /// <param name="coachEditUserDto">New information</param>
-        /// <returns>modified User</returns>
-        //public async Task<ApplicationUser> CoachEditUser(string userId, CoachEditUserDto coachEditUserDto)
-        //{
-        //    ApplicationUser tUser = await GetUserById(userId);
-        //    if (tUser.FullName != coachEditUserDto.FullName && coachEditUserDto.FullName != "") { tUser.FullName = coachEditUserDto.FullName; }
-        //    if (tUser.Email != coachEditUserDto.Email && coachEditUserDto.Email != "") { tUser.Email = coachEditUserDto.Email; }
-        //    if (tUser.PhoneNumber != coachEditUserDto.PhoneNumber && coachEditUserDto.PhoneNumber != "") { tUser.PhoneNumber = coachEditUserDto.PhoneNumber; }
-        //    //if (tUser.RoleID != coachEditUserDto.RoleID && coachEditUserDto.RoleID >= 1 && tUser.RoleID <= 3) { tUser.RoleID = coachEditUserDto.RoleID; }
-        //    if (tUser.UserName != coachEditUserDto.UserName && coachEditUserDto.UserName != "") { tUser.UserName = coachEditUserDto.UserName; }
-        //    await _repo.CommitSave();
-        //    return tUser;
-        //}
+        /// <param name="loggedInUserId"></param>
+        /// <param name="userToEditId"></param>
+        /// <returns></returns>
+        public async Task<bool> AllowedToAlterUser(string loggedInUserId, string userToEditId)
+        {
+            ApplicationUser loggedInUser = await GetUserById(loggedInUserId);
+            ApplicationUser userToEdit = await GetUserById(userToEditId);
+            switch(loggedInUser.RoleName){
+                case Roles.A: if (userToEdit.RoleName != Roles.A) return true;
+                                return false;
+                case Roles.LM: if(userToEdit.RoleName != Roles.A || userToEdit.RoleName != Roles.LM ) return true;
+                                return false;
+                case Roles.HC: if (userToEdit.RoleName != Roles.A || userToEdit.RoleName != Roles.LM || userToEdit.RoleName != Roles.HC) return true;
+                                return false;
+                default: return false;
+            }
+
+
+        }
+        
     }
 }
