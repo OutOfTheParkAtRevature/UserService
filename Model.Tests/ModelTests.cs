@@ -65,7 +65,7 @@ namespace Model.Tests
             Assert.Equal(0, errorcount);
         }
         /// <summary>
-        /// Makes sure the User Model doesn't accept invalid data
+        /// Makes sure the User Model doesn't accept empty fields for email and password
         /// </summary>
         [Fact]
         public void InvalidateUserForAuthenticationDto()
