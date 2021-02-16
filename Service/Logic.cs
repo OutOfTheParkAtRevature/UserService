@@ -5,10 +5,13 @@ using Model;
 using Model.DataTransfer;
 using Models;
 using Models.DataTransfer;
+using Newtonsoft.Json;
 using Repository;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -24,8 +27,9 @@ namespace Service
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly JwtHandler _jwtHandler;
         private readonly ILogger<Repo> _logger;
+        private readonly HttpClient _httpClient;
 
-        public Logic(Repo repo, UserManager<ApplicationUser> userManager, Mapper mapper, JwtHandler jwtHandler, ILogger<Repo> logger, RoleManager<IdentityRole> roleManager)
+        public Logic(Repo repo, UserManager<ApplicationUser> userManager, Mapper mapper, JwtHandler jwtHandler, ILogger<Repo> logger, RoleManager<IdentityRole> roleManager, HttpClient httpClient)
         {
             _repo = repo;
             _mapper = mapper;
@@ -33,6 +37,7 @@ namespace Service
             _jwtHandler = jwtHandler;
             _roleManager = roleManager;
             _userManager = userManager;
+            _httpClient = httpClient;
         }
 
         /// <summary>
@@ -92,7 +97,10 @@ namespace Service
             {
                 return new AuthResponseDto { IsAuthSuccessful = false, ErrorMessage = result.Errors.ToString() };
             }
+            //if (user.RoleName == "Parent")
+            //{
 
+            //}
             await _userManager.AddToRoleAsync(user, Roles.PL);
 
             //Create notification for Head Coach/League Manager with user info and requested role
@@ -217,6 +225,29 @@ namespace Service
             await _userManager.RemoveFromRoleAsync(tUser, tUser.RoleName);
             tUser.RoleName = RoleName;
             await _userManager.AddToRoleAsync(tUser, RoleName);
+            Guid carpoolId;
+            if (RoleName == "Parent")
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    using (var response = await httpClient.GetAsync($"api/League/Team/{tUser.TeamID}"))
+                    {
+                        string apiResponse = await response.Content.ReadAsStringAsync();
+
+                        var team = JsonConvert.DeserializeObject<TeamDto>(apiResponse);
+                        carpoolId = team.CarpoolID;
+                    }
+                }
+                RecipientListDto rLD = new RecipientListDto()
+                {
+                    RecipientListID = carpoolId,
+                    RecipientID = userId
+                };
+                using (var httpClient = new HttpClient())
+                {
+                    var response = await httpClient.PostAsJsonAsync($"api/Message/RecipientLists/Create", rLD);
+                }
+            }
             await _repo.CommitSave();
             return tUser;
         }
