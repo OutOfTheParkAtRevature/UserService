@@ -47,9 +47,19 @@ namespace UserService
 
             services.AddDbContext<UserContext>(options => options.UseSqlServer(Configuration.GetConnectionString("LocalDB")));
             services.AddIdentity<ApplicationUser, IdentityRole>
-                (options => options.SignIn.RequireConfirmedAccount = true)
+                (options =>
+                {
+                    options.SignIn.RequireConfirmedAccount = false;
+                    options.User.RequireUniqueEmail = true;
+                })
                 .AddEntityFrameworkStores<UserContext>()
                 .AddDefaultTokenProviders();
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("RequireAdministratorRole",
+                     policy => policy.RequireRole("Admin"));
+            });
 
             var identityUrl = Configuration.GetValue<string>("IdentityUrl");
             var jwtSettings = Configuration.GetSection("JwtSettings");

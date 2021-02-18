@@ -63,18 +63,19 @@ namespace Repository
                 await _roleManager.CreateAsync(new IdentityRole(Roles.PL));
             }
             string[] userNames = { "CooperJoe", "RemerDoug", "ScolariKenny", "MartinRobert", "UnderwoodCarolyn", "CooperGavin", "RemerMax",
-                "ScolariLiam", "MartinStewart", "UnderwoodColin", "WalshSteven", "AbrahamVictor", "AlsopDiana" };
+                                   "ScolariLiam", "MartinStewart", "UnderwoodColin", "WalshSteven", "AbrahamVictor", "AlsopDiana" };
             string[] passwords = { "Nonmeteorically1", "Airsickness2", "Exemplarily3", "Nonsobriety4", "Ileocolitis5", "Tittivating6", "Preconcentrating7",
-                "Vascularization8", "Semidigested9", "Strumectomy0", "Fumigate1", "Geometrically2", "Superoccipital3" };
+                                   "Vascularization8", "Semidigested9", "Strumectomy0", "Fumigate1", "Geometrically2", "Superoccipital3" };
             string[] names = {  "Joe Cooper", "Doug Remer", "Kenny Scolari", "Robert Martin", "Carolyn Underwood", "Gavin Cooper", "Max Remer",
-                "Liam Scolari", "Stewart Martin", "Colin Underwood", "Steven Walsh", "Victor Abraham", "Diana Alsop" };
+                                "Liam Scolari", "Stewart Martin", "Colin Underwood", "Steven Walsh", "Victor Abraham", "Diana Alsop" };
             string[] phonenumbers = { "414-555-6548", "414-555-6453", "414-555-1056", "414-555-3546", "414-555-4356", "414-555-3685",
-                "414-555-3257", "414-555-3428", "414-555-7839", "414-555-4523", "414-555-3658", "469-555-4387", "973-555-1654" };
+                                      "414-555-3257", "414-555-3428", "414-555-7839", "414-555-4523", "414-555-3658", "469-555-4387", "973-555-1654" };
             string[] emails = { "CooperJoe@Tigers.com", "RemerDoug@Tigers.com", "ScolariKenny@Tigers.com",
-                "MartinRobert@Tigers.com", "UnderwoodCarolyn@Tigers.com", "CooperGavin@Tigers.com", "RemerMax@Tigers.com",
-                "ScolariLiam@Tigers.com", "MartinStewart@Tigers.com", "UnderwoodColin@Tigers.com", "WalshSteven@Tigers.com",
-                "AbrahamVictor@Tigers.com", "AlsopDiana@Tigers.com" };
+                                "MartinRobert@Tigers.com", "UnderwoodCarolyn@Tigers.com", "CooperGavin@Tigers.com", "RemerMax@Tigers.com",
+                                "ScolariLiam@Tigers.com", "MartinStewart@Tigers.com", "UnderwoodColin@Tigers.com", "WalshSteven@Tigers.com",
+                                "AbrahamVictor@Tigers.com", "AlsopDiana@Tigers.com" };
             string[] roles = { "Parent", "Parent", "Parent", "Parent", "Parent", "Player", "Player", "Player", "Player", "Player", "Coach", "AssistantCoach" };
+
             Guid teamId = Guid.NewGuid();
             List<string> CarpoolList = new List<string>();
             for (int i = 0; i < userNames.Length; i++)
@@ -86,14 +87,15 @@ namespace Repository
                     Email = emails[i],
                     SecurityStamp = Guid.NewGuid().ToString(),
                     UserName = userNames[i],
-                    RoleName = roles[i],
                     TeamID = teamId
                 };
+                await Users.AddAsync(user);
                 if (user.RoleName == "Parent")
                 {
                     CarpoolList.Add(user.Id);
                 }
-                await Users.AddAsync(user);
+                await _userManager.CreateAsync(user, passwords[i]);
+                await _userManager.AddToRoleAsync(user, roles[i]);
             }
             await CommitSave();
         }

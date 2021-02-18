@@ -27,9 +27,8 @@ namespace Service
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly JwtHandler _jwtHandler;
         private readonly ILogger<Repo> _logger;
-        private readonly HttpClient _httpClient;
 
-        public Logic(Repo repo, UserManager<ApplicationUser> userManager, Mapper mapper, JwtHandler jwtHandler, ILogger<Repo> logger, RoleManager<IdentityRole> roleManager, HttpClient httpClient)
+        public Logic(Repo repo, UserManager<ApplicationUser> userManager, Mapper mapper, JwtHandler jwtHandler, ILogger<Repo> logger, RoleManager<IdentityRole> roleManager)
         {
             _repo = repo;
             _mapper = mapper;
@@ -37,7 +36,6 @@ namespace Service
             _jwtHandler = jwtHandler;
             _roleManager = roleManager;
             _userManager = userManager;
-            _httpClient = httpClient;
         }
 
         /// <summary>
@@ -72,6 +70,7 @@ namespace Service
         /// <returns>UserLoggedInDto</returns>
         public async Task<AuthResponseDto> CreateUser(CreateUserDto cud)
         {
+            //await _repo.SeedUsers();
             if (!await _roleManager.RoleExistsAsync(Roles.A))
             {
                 await _roleManager.CreateAsync(new IdentityRole(Roles.A));
@@ -93,15 +92,13 @@ namespace Service
                 TeamID = cud.TeamID,
             };
             var result = await _userManager.CreateAsync(user, cud.Password);
+            await _repo.Users.AddAsync(user);
             if (!result.Succeeded)
             {
                 return new AuthResponseDto { IsAuthSuccessful = false, ErrorMessage = result.Errors.ToString() };
             }
-            //if (user.RoleName == "Parent")
-            //{
-
-            //}
-            await _userManager.AddToRoleAsync(user, Roles.PL);
+            
+            await _userManager.AddToRoleAsync(user, cud.RoleName);
 
             //Create notification for Head Coach/League Manager with user info and requested role
             //allow them to set Role accordingly
@@ -230,13 +227,11 @@ namespace Service
             {
                 using (var httpClient = new HttpClient())
                 {
-                    using (var response = await httpClient.GetAsync($"api/League/Team/{tUser.TeamID}"))
-                    {
-                        string apiResponse = await response.Content.ReadAsStringAsync();
+                    using var response = await httpClient.GetAsync($"api/League/Team/{tUser.TeamID}");
+                    string apiResponse = await response.Content.ReadAsStringAsync();
 
-                        var team = JsonConvert.DeserializeObject<TeamDto>(apiResponse);
-                        carpoolId = team.CarpoolID;
-                    }
+                    var team = JsonConvert.DeserializeObject<TeamDto>(apiResponse);
+                    carpoolId = team.CarpoolID;
                 }
                 RecipientListDto rLD = new RecipientListDto()
                 {

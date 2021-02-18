@@ -19,6 +19,7 @@ namespace UserService
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin, League Manager, Head Coach, Assistant Coach, Parent, Player")]
     public class UserController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -40,6 +41,7 @@ namespace UserService
 
 
         [HttpPost("create")]
+        [AllowAnonymous]
         public async Task<IActionResult> Create([FromBody] CreateUserDto cud)
         {
             var userExists = await _userManager.FindByNameAsync(cud.UserName);
@@ -50,6 +52,7 @@ namespace UserService
         }
 
         [HttpPost("login")]
+        [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginDto userForAuthentication)
         {
             var user = await _userManager.FindByNameAsync(userForAuthentication.UserName);
@@ -60,26 +63,23 @@ namespace UserService
         }
 
         [HttpGet]
-        [Authorize(Roles="Admin, League Manager, Head Coach")]
+        [Authorize(Roles = "Admin, League Manager, Head Coach, Assistant Coach")]
         public async Task<IActionResult> GetUsers()
         {
             return Ok(await _logic.GetUsers());
         }
 
         [HttpGet("{username}")]
-        [Authorize]
         public async Task<ActionResult<UserDto>> GetUserByUsername(string username)
         {
             return _mapper.ConvertUserToUserDto(await _logic.GeUserByUsername(username));
         }
 
         [HttpGet("{id}")]
-        [Authorize]
         public async Task<ActionResult<UserDto>> GetUser(string id)
         {
             return _mapper.ConvertUserToUserDto(await _logic.GetUserById(id));
         }
-
 
         [HttpGet("{id}/Role")]
         [Authorize]
@@ -118,8 +118,5 @@ namespace UserService
             if (result) return Ok("User deleted successfully");
             return NotFound("User not found");
         }
-
-
-
     }
 }
