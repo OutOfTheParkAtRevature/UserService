@@ -55,14 +55,14 @@ namespace Service.Tests
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
 
-                Repo repo = new Repo(context, new NullLogger<Repo>());
+                Repo repo = new Repo(context, new NullLogger<Repo>(), null, null);
                 //add user to db
                 repo.Users.Add(user);
                 await repo.CommitSave();
             }
             using (var context = new UserContext(options))
             {
-                Repo repo = new Repo(context, new NullLogger<Repo>());
+                Repo repo = new Repo(context, new NullLogger<Repo>(), null, null);
 
                 var userManagerMock = new Mock<FakeUserManager>();
                 userManagerMock.Setup(x => x.GetRolesAsync(user)).ReturnsAsync(() => new List<string>() { user.RoleName });
@@ -109,28 +109,22 @@ namespace Service.Tests
             {
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
-                Repo repo = new Repo(context, new NullLogger<Repo>());
 
                 var userManagerMock = new Mock<FakeUserManager>();
-                //userManagerMock.Setup(x => x.GetRolesAsync(user)).ReturnsAsync(new List<string>() { user.RoleName });
+                var roleManagerMock = new Mock<FakeRoleManager>();
 
-                //var successResponse = new IdentityResult()
-                //{
-                //    Succeeded = true,
-                //    Errors = "none"
-                //};
-                //new Mock<IdentityResult>();
-                //set up readonly property
-                //successResponse.SetupGet(x => x.Succeeded).Returns(true);
+                Repo repo = new Repo(context, new NullLogger<Repo>(), userManagerMock.Object, roleManagerMock.Object);
 
                 userManagerMock.Setup(x => x.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>())).ReturnsAsync(IdentityResult.Success);
 
                 //create callback to store in db because we don't have access to the usermanager to do it
-                userManagerMock.Setup(x => x.AddToRoleAsync(It.IsAny<ApplicationUser>(), Roles.PL)).Callback(async (ApplicationUser sentUser, string role) => { sentUser.RoleName = role; await repo.Users.AddAsync(sentUser);await repo.CommitSave();});
+                userManagerMock.Setup(x => x.AddToRoleAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>())).Callback(async (ApplicationUser sentUser, string role) => { sentUser.RoleName = role; await repo.Users.AddAsync(sentUser);await repo.CommitSave();});
 
-                var roleManagerMock = new Mock<FakeRoleManager>();
+                
                 roleManagerMock.Setup(x => x.RoleExistsAsync(Roles.A)).ReturnsAsync(true);
 
+
+                //Repo repo = new Repo(context, new NullLogger<Repo>(),userManagerMock.Object,roleManagerMock.Object);
 
                 Logic logic = new Logic(repo, userManagerMock.Object, new Mapper(), new JwtHandler(_config), new NullLogger<Repo>(), roleManagerMock.Object);
 
@@ -146,7 +140,7 @@ namespace Service.Tests
                 Assert.Equal(cud.PhoneNumber, result.PhoneNumber);
                 Assert.Equal(cud.Email, result.Email);
                 Assert.Equal(cud.TeamID, result.TeamID);
-                Assert.Equal(Roles.PL, result.RoleName);
+                Assert.Equal(cud.RoleName, result.RoleName);
             }
 
         }
@@ -157,6 +151,12 @@ namespace Service.Tests
             var options = new DbContextOptionsBuilder<UserContext>()
             .UseInMemoryDatabase(databaseName: "servicetestdb2")
             .Options;
+
+
+            var userManagerMock = new Mock<UserManager<ApplicationUser>>();
+            var jwtHandlerMock = new Mock<JwtHandler>();
+            var roleManagerMock = new Mock<RoleManager<IdentityRole>>();
+
 
             var user = new ApplicationUser
             {
@@ -175,7 +175,7 @@ namespace Service.Tests
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
 
-                Repo repo = new Repo(context, new NullLogger<Repo>());               
+                Repo repo = new Repo(context, new NullLogger<Repo>(),null,null);               
                 //add user to db
                 repo.Users.Add(user);
                 await repo.CommitSave();
@@ -183,14 +183,8 @@ namespace Service.Tests
             using (var context = new UserContext(options))
             {
                 //check that user is still in db with new context
-                Repo repo = new Repo(context, new NullLogger<Repo>());
+                Repo repo = new Repo(context, new NullLogger<Repo>(), null,null);
                 //mock logic requirements for finduserbyId
-                var userManagerMock = new Mock<UserManager<ApplicationUser>>();
-                //userManagerMock.Setup(x => x.FindByIdAsync(It.IsAny<string>())).Returns(() => null);
-                //var iUserStoreMock = new Mock<IUserStore<ApplicationUser>>();
-                //var emptyUserManager = new UserManager<ApplicationUser>(null, null, null, null, null, null, null, null, null);
-                var jwtHandlerMock = new Mock<JwtHandler>();
-                var roleManagerMock = new Mock<RoleManager<IdentityRole>>();
                 Logic logic = new Logic(repo, null, null, null, new NullLogger<Repo>(), null);
 
                 var result = await logic.GetUserById(user.Id);
@@ -223,7 +217,7 @@ namespace Service.Tests
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
 
-                Repo repo = new Repo(context, new NullLogger<Repo>());
+                Repo repo = new Repo(context, new NullLogger<Repo>(),null,null);
                 //add user to db
                 repo.Users.Add(user);
                 await repo.CommitSave();
@@ -231,7 +225,7 @@ namespace Service.Tests
             using (var context = new UserContext(options))
             {
                 //check that user is still in db with new context
-                Repo repo = new Repo(context, new NullLogger<Repo>());
+                Repo repo = new Repo(context, new NullLogger<Repo>(),null,null);
                 Logic logic = new Logic(repo, null, null, null, new NullLogger<Repo>(), null);
 
                 var result = await logic.GeUserByUsername(user.UserName);
