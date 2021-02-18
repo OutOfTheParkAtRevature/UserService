@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Repository.Migrations
 {
-    public partial class m1 : Migration
+    public partial class users : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -19,7 +19,6 @@ namespace Repository.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetRoles", x => x.Id);
-                    table.UniqueConstraint("UC_AspNetRoles_Name", x => x.Name);
                 });
 
             migrationBuilder.CreateTable(
@@ -29,8 +28,8 @@ namespace Repository.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TeamID = table.Column<int>(type: "int", nullable: true),
-                    RoleName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    TeamID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    RoleName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     StatLineID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -50,13 +49,6 @@ namespace Repository.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                    table.UniqueConstraint("UC_AspNetUsers_Email", x => x.Email);
-                    table.ForeignKey(
-                        name: "FK_AspNetUsers_AspNetRoles_Name",
-                        column: x => x.RoleName,
-                        principalTable: "AspNetRoles",
-                        principalColumn: "Name",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
