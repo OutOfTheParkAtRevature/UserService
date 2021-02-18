@@ -12,13 +12,13 @@ namespace Repository.Tests
         /// <summary>
         /// Tests the CommitSave() method of Repo
         /// </summary>
-        //[Fact]
-        //public async void TestForCommitSave()
-        //{
-        //    var options = new DbContextOptionsBuilder<UserContext>().UseInMemoryDatabase(databaseName: "p2newsetuptest")
-        //    .Options;
+        [Fact]
+        public async void TestForCommitSave()
+        {
+            var options = new DbContextOptionsBuilder<UserContext>().UseInMemoryDatabase(databaseName: "p2newsetuptest")
+            .Options;
 
-            
+
 
             using (var context = new UserContext(options))
             {

@@ -68,7 +68,7 @@ namespace Service.Tests
                 userManagerMock.Setup(x => x.GetRolesAsync(user)).ReturnsAsync(() => new List<string>() { user.RoleName });
 
 
-                Logic logic = new Logic(repo, userManagerMock.Object, new Mapper(), new JwtHandler(_config), new NullLogger<Repo>(), null,null);
+                Logic logic = new Logic(repo, userManagerMock.Object, new Mapper(), new JwtHandler(_config), new NullLogger<Repo>(), null);
 
 
                 var result = await logic.LoginUser(user);
@@ -118,7 +118,7 @@ namespace Service.Tests
                 userManagerMock.Setup(x => x.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>())).ReturnsAsync(IdentityResult.Success);
 
                 //create callback to store in db because we don't have access to the usermanager to do it
-                userManagerMock.Setup(x => x.AddToRoleAsync(It.IsAny<ApplicationUser>(), Roles.PL)).Callback(async (ApplicationUser sentUser, string role) => { sentUser.RoleName = role; await repo.Users.AddAsync(sentUser);await repo.CommitSave();});
+                userManagerMock.Setup(x => x.AddToRoleAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>())).Callback(async (ApplicationUser sentUser, string role) => { sentUser.RoleName = role; await repo.Users.AddAsync(sentUser);await repo.CommitSave();});
 
                 
                 roleManagerMock.Setup(x => x.RoleExistsAsync(Roles.A)).ReturnsAsync(true);
@@ -126,7 +126,7 @@ namespace Service.Tests
 
                 //Repo repo = new Repo(context, new NullLogger<Repo>(),userManagerMock.Object,roleManagerMock.Object);
 
-                Logic logic = new Logic(repo, userManagerMock.Object, new Mapper(), new JwtHandler(_config), new NullLogger<Repo>(), roleManagerMock.Object,null);
+                Logic logic = new Logic(repo, userManagerMock.Object, new Mapper(), new JwtHandler(_config), new NullLogger<Repo>(), roleManagerMock.Object);
 
                 var authResponse = await logic.CreateUser(cud);
 
@@ -140,7 +140,7 @@ namespace Service.Tests
                 Assert.Equal(cud.PhoneNumber, result.PhoneNumber);
                 Assert.Equal(cud.Email, result.Email);
                 Assert.Equal(cud.TeamID, result.TeamID);
-                Assert.Equal(Roles.PL, result.RoleName);
+                Assert.Equal(cud.RoleName, result.RoleName);
             }
 
         }
@@ -185,7 +185,7 @@ namespace Service.Tests
                 //check that user is still in db with new context
                 Repo repo = new Repo(context, new NullLogger<Repo>(), null,null);
                 //mock logic requirements for finduserbyId
-                Logic logic = new Logic(repo, null, null, null, new NullLogger<Repo>(), null,null);
+                Logic logic = new Logic(repo, null, null, null, new NullLogger<Repo>(), null);
 
                 var result = await logic.GetUserById(user.Id);
 
@@ -226,7 +226,7 @@ namespace Service.Tests
             {
                 //check that user is still in db with new context
                 Repo repo = new Repo(context, new NullLogger<Repo>(),null,null);
-                Logic logic = new Logic(repo, null, null, null, new NullLogger<Repo>(), null,null);
+                Logic logic = new Logic(repo, null, null, null, new NullLogger<Repo>(), null);
 
                 var result = await logic.GeUserByUsername(user.UserName);
 
