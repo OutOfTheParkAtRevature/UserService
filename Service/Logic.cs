@@ -29,7 +29,7 @@ namespace Service
         private readonly ILogger<Repo> _logger;
         private readonly HttpClient _httpClient;
 
-        public Logic(Repo repo, UserManager<ApplicationUser> userManager, Mapper mapper, JwtHandler jwtHandler, ILogger<Repo> logger, RoleManager<IdentityRole> roleManager, HttpClient httpClient)
+        public Logic(Repo repo, UserManager<ApplicationUser> userManager, Mapper mapper, JwtHandler jwtHandler, ILogger<Repo> logger, RoleManager<IdentityRole> roleManager)
         {
             _repo = repo;
             _mapper = mapper;
@@ -37,7 +37,6 @@ namespace Service
             _jwtHandler = jwtHandler;
             _roleManager = roleManager;
             _userManager = userManager;
-            _httpClient = httpClient;
         }
 
         /// <summary>
