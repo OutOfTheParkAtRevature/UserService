@@ -51,6 +51,7 @@ namespace UserService
                 .AddEntityFrameworkStores<UserContext>()
                 .AddDefaultTokenProviders();
 
+            var identityUrl = Configuration.GetValue<string>("IdentityUrl");
             var jwtSettings = Configuration.GetSection("JwtSettings");
             services.AddAuthentication(opt =>
             {
