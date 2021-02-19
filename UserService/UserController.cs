@@ -58,6 +58,10 @@ namespace UserService
             var user = await _userManager.FindByNameAsync(userForAuthentication.UserName);
             if (user == null || !await _userManager.CheckPasswordAsync(user, userForAuthentication.Password))
                 return Unauthorized("Invalid Authentication");
+            if (!await _userManager.IsEmailConfirmedAsync(user))
+                return Unauthorized(new AuthResponseDto { ErrorMessage = "Email is not confirmed" });
+            if (!await _userManager.CheckPasswordAsync(user, userForAuthentication.Password)) 
+                return Unauthorized(new AuthResponseDto { ErrorMessage = "Invalid Authentication" });
 
             return Ok(await _logic.LoginUser(user));
         }
@@ -88,6 +92,17 @@ namespace UserService
             return Ok(await _logic.GetUserRole(id));
         }
 
+        [HttpGet("EmailConfirmation")]
+        public async Task<IActionResult> EmailConfirmation([FromQuery] string email, [FromQuery] string token)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+                return BadRequest("Invalid Email Confirmation Request");
+            var confirmResult = await _userManager.ConfirmEmailAsync(user, token);
+            if (!confirmResult.Succeeded)
+                return BadRequest("Invalid Email Confirmation Request");
+            return Ok();
+        }
 
         [HttpPut("edit/{id}")]
         [Authorize]

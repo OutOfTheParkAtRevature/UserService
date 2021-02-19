@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Model;
@@ -93,16 +94,29 @@ namespace Service
             };
             var result = await _userManager.CreateAsync(user, cud.Password);
             await _repo.Users.AddAsync(user);
-            if (!result.Succeeded)
+            if (result.Succeeded)
             {
                 return new AuthResponseDto { IsAuthSuccessful = false, ErrorMessage = result.Errors.ToString() };
             }
-            
+
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var param = new Dictionary<string, string>
+            {
+                { "token", token },
+                { "email", user.Email }
+            };
+            var callback = QueryHelpers.AddQueryString(cud.ClientURI, param);
+            var message = new EmailMessage(new string[] { user.Email }, "Email Confirmation token", callback, null);
+            using (var httpClient = new HttpClient())
+            {
+                var response = await httpClient.PostAsJsonAsync($"api/Message/SendEmail", message);
+            }
+
             await _userManager.AddToRoleAsync(user, cud.RoleName);
 
             //Create notification for Head Coach/League Manager with user info and requested role
             //allow them to set Role accordingly
-
+            
             return new AuthResponseDto { IsAuthSuccessful = true };
         }
 
