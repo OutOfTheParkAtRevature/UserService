@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Model;
@@ -27,7 +28,6 @@ namespace Service
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly JwtHandler _jwtHandler;
         private readonly ILogger<Repo> _logger;
-        private readonly HttpClient _httpClient;
 
         public Logic(Repo repo, UserManager<ApplicationUser> userManager, Mapper mapper, JwtHandler jwtHandler, ILogger<Repo> logger, RoleManager<IdentityRole> roleManager)
         {
@@ -71,6 +71,7 @@ namespace Service
         /// <returns>UserLoggedInDto</returns>
         public async Task<AuthResponseDto> CreateUser(CreateUserDto cud)
         {
+            //await _repo.SeedUsers();
             if (!await _roleManager.RoleExistsAsync(Roles.A))
             {
                 await _roleManager.CreateAsync(new IdentityRole(Roles.A));
@@ -92,19 +93,30 @@ namespace Service
                 TeamID = cud.TeamID,
             };
             var result = await _userManager.CreateAsync(user, cud.Password);
-            if (!result.Succeeded)
+            await _repo.Users.AddAsync(user);
+            if (result.Succeeded)
             {
                 return new AuthResponseDto { IsAuthSuccessful = false, ErrorMessage = result.Errors.ToString() };
             }
-            //if (user.RoleName == "Parent")
-            //{
 
-            //}
-            await _userManager.AddToRoleAsync(user, Roles.PL);
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var param = new Dictionary<string, string>
+            {
+                { "token", token },
+                { "email", user.Email }
+            };
+            var callback = QueryHelpers.AddQueryString(cud.ClientURI, param);
+            var message = new EmailMessage(new string[] { user.Email }, "Email Confirmation token", callback, null);
+            using (var httpClient = new HttpClient())
+            {
+                var response = await httpClient.PostAsJsonAsync($"api/Message/SendEmail", message);
+            }
+
+            await _userManager.AddToRoleAsync(user, cud.RoleName);
 
             //Create notification for Head Coach/League Manager with user info and requested role
             //allow them to set Role accordingly
-
+            
             return new AuthResponseDto { IsAuthSuccessful = true };
         }
 
@@ -229,13 +241,11 @@ namespace Service
             {
                 using (var httpClient = new HttpClient())
                 {
-                    using (var response = await httpClient.GetAsync($"api/League/Team/{tUser.TeamID}"))
-                    {
-                        string apiResponse = await response.Content.ReadAsStringAsync();
+                    using var response = await httpClient.GetAsync($"api/League/Team/{tUser.TeamID}");
+                    string apiResponse = await response.Content.ReadAsStringAsync();
 
-                        var team = JsonConvert.DeserializeObject<TeamDto>(apiResponse);
-                        carpoolId = team.CarpoolID;
-                    }
+                    var team = JsonConvert.DeserializeObject<TeamDto>(apiResponse);
+                    carpoolId = team.CarpoolID;
                 }
                 RecipientListDto rLD = new RecipientListDto()
                 {

@@ -234,8 +234,8 @@ namespace Repository.Migrations
                     b.Property<Guid>("StatLineID")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("TeamID")
-                        .HasColumnType("int");
+                    b.Property<Guid>("TeamID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasDiscriminator().HasValue("ApplicationUser");
                 });

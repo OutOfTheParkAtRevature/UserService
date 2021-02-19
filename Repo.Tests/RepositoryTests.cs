@@ -18,14 +18,14 @@ namespace Repository.Tests
             var options = new DbContextOptionsBuilder<UserContext>().UseInMemoryDatabase(databaseName: "p2newsetuptest")
             .Options;
 
-            
+
 
             using (var context = new UserContext(options))
             {
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
 
-                Repo r = new Repo(context, new NullLogger<Repo>());
+                Repo r = new Repo(context, new NullLogger<Repo>(),null,null);
 
                 var user = new ApplicationUser
                 {
@@ -47,7 +47,7 @@ namespace Repository.Tests
             using (var context = new UserContext(options))
             {
                 //check that user is still in db with new context
-                Repo r = new Repo(context, new NullLogger<Repo>());
+                Repo r = new Repo(context, new NullLogger<Repo>(),null,null);
 
                 Assert.NotEmpty(context.Users);
             }
@@ -68,7 +68,7 @@ namespace Repository.Tests
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
 
-                Repo r = new Repo(context, new NullLogger<Repo>());
+                Repo r = new Repo(context, new NullLogger<Repo>(),null, null);
 
                 var user = new ApplicationUser
                 {
@@ -90,7 +90,7 @@ namespace Repository.Tests
             using (var context = new UserContext(options))
             {
                 //check that user is still in db with new context
-                Repo r = new Repo(context, new NullLogger<Repo>());
+                Repo r = new Repo(context, new NullLogger<Repo>(),null, null);
 
                 var listOfUsers = await r.GetUsers();
                 Assert.NotNull(listOfUsers);
@@ -125,7 +125,7 @@ namespace Repository.Tests
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
 
-                Repo r = new Repo(context, new NullLogger<Repo>());
+                Repo r = new Repo(context, new NullLogger<Repo>(), null, null);
                 //add user to db
                 r.Users.Add(user);
                 await r.CommitSave();
@@ -134,7 +134,7 @@ namespace Repository.Tests
             using (var context = new UserContext(options))
             {
                 //check that user is still in db with new context
-                Repo r = new Repo(context, new NullLogger<Repo>());
+                Repo r = new Repo(context, new NullLogger<Repo>(), null, null);
 
                 var searchForUser = await r.GetUserById(user.Id);
                 Assert.Equal(user.UserName, searchForUser.UserName);// True(searchForUser.Equals(user));

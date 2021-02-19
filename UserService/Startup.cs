@@ -47,9 +47,17 @@ namespace UserService
 
             services.AddDbContext<UserContext>(options => options.UseSqlServer(Configuration.GetConnectionString("LocalDB")));
             services.AddIdentity<ApplicationUser, IdentityRole>
-                (options => options.SignIn.RequireConfirmedAccount = true)
+                (options =>
+                {
+                    options.SignIn.RequireConfirmedAccount = true;
+                    options.User.RequireUniqueEmail = true;
+                    options.Password.RequiredLength = 8;
+                })
                 .AddEntityFrameworkStores<UserContext>()
                 .AddDefaultTokenProviders();
+
+            services.Configure<DataProtectionTokenProviderOptions>(o =>
+                o.TokenLifespan = TimeSpan.FromHours(3));
 
             var identityUrl = Configuration.GetValue<string>("IdentityUrl");
             var jwtSettings = Configuration.GetSection("JwtSettings");

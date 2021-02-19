@@ -23,6 +23,7 @@ namespace UserService
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin, League Manager, Head Coach, Assistant Coach, Parent, Player")]
     public class UserController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -44,6 +45,7 @@ namespace UserService
 
 
         [HttpPost("create")]
+        [AllowAnonymous]
         public async Task<IActionResult> Create([FromBody] CreateUserDto cud)
         {
             var userExists = await _userManager.FindByNameAsync(cud.UserName);
@@ -54,36 +56,38 @@ namespace UserService
         }
 
         [HttpPost("login")]
+        [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginDto userForAuthentication)
         {
             var user = await _userManager.FindByNameAsync(userForAuthentication.UserName);
             if (user == null || !await _userManager.CheckPasswordAsync(user, userForAuthentication.Password))
                 return Unauthorized("Invalid Authentication");
+            if (!await _userManager.IsEmailConfirmedAsync(user))
+                return Unauthorized(new AuthResponseDto { ErrorMessage = "Email is not confirmed" });
+            if (!await _userManager.CheckPasswordAsync(user, userForAuthentication.Password)) 
+                return Unauthorized(new AuthResponseDto { ErrorMessage = "Invalid Authentication" });
 
             return Ok(await _logic.LoginUser(user));
         }
 
         [HttpGet]
-        [Authorize(Roles="Admin, League Manager, Head Coach")]
+        [Authorize(Roles = "Admin, League Manager, Head Coach, Assistant Coach")]
         public async Task<IActionResult> GetUsers()
         {
             return Ok(await _logic.GetUsers());
         }
 
         [HttpGet("{username}")]
-        [Authorize]
         public async Task<ActionResult<UserDto>> GetUserByUsername(string username)
         {
             return _mapper.ConvertUserToUserDto(await _logic.GeUserByUsername(username));
         }
 
         [HttpGet("{id}")]
-        [Authorize]
         public async Task<ActionResult<UserDto>> GetUser(string id)
         {
             return _mapper.ConvertUserToUserDto(await _logic.GetUserById(id));
         }
-
 
         [HttpGet("{id}/Role")]
         [Authorize]
@@ -92,6 +96,18 @@ namespace UserService
             return Ok(await _logic.GetUserRole(id));
         }
 
+        [HttpGet("EmailConfirmation")]
+        [AllowAnonymous]
+        public async Task<IActionResult> EmailConfirmation([FromQuery] string email, [FromQuery] string token)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+                return BadRequest("Invalid Email Confirmation Request");
+            var confirmResult = await _userManager.ConfirmEmailAsync(user, token);
+            if (!confirmResult.Succeeded)
+                return BadRequest("Invalid Email Confirmation Request");
+            return Ok();
+        }
 
         [HttpPut("edit/{id}")]
         [Authorize]
@@ -122,8 +138,5 @@ namespace UserService
             if (result) return Ok("User deleted successfully");
             return NotFound("User not found");
         }
-
-
-
     }
 }
