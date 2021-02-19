@@ -49,8 +49,9 @@ namespace UserService
             services.AddIdentity<ApplicationUser, IdentityRole>
                 (options =>
                 {
-                    options.SignIn.RequireConfirmedAccount = false;
+                    options.SignIn.RequireConfirmedAccount = true;
                     options.User.RequireUniqueEmail = true;
+                    options.Password.RequiredLength = 8;
                 })
                 .AddEntityFrameworkStores<UserContext>()
                 .AddDefaultTokenProviders();

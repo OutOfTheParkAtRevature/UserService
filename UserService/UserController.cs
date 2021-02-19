@@ -93,6 +93,7 @@ namespace UserService
         }
 
         [HttpGet("EmailConfirmation")]
+        [AllowAnonymous]
         public async Task<IActionResult> EmailConfirmation([FromQuery] string email, [FromQuery] string token)
         {
             var user = await _userManager.FindByEmailAsync(email);
