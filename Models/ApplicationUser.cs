@@ -22,6 +22,6 @@ namespace Models
         public string RoleName { get; set; }
         [DisplayName("Stat Line ID")]
         [ForeignKey("StatLineID")]
-        public Guid StatLineID { get; set; }
+        public Guid? StatLineID { get; set; } = null;
     }
 }

@@ -11,8 +11,11 @@ using Repository;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Net.Mail;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -89,12 +92,12 @@ namespace Service
                 Email = cud.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = cud.UserName,
-                RoleName = cud.RoleName,
-                TeamID = cud.TeamID,
             };
+            if (cud.TeamID != null) user.TeamID = (Guid)cud.TeamID;
+            
             var result = await _userManager.CreateAsync(user, cud.Password);
             await _repo.Users.AddAsync(user);
-            if (result.Succeeded)
+            if (!result.Succeeded)
             {
                 return new AuthResponseDto { IsAuthSuccessful = false, ErrorMessage = result.Errors.ToString() };
             }
@@ -117,6 +120,11 @@ namespace Service
             //Create notification for Head Coach/League Manager with user info and requested role
             //allow them to set Role accordingly
             
+            var users = await _userManager.GetUsersInRoleAsync(Roles.A);
+            if (users.Count == 0) await _userManager.AddToRoleAsync(user, Roles.A);
+
+            /*Create notification for Head Coach/ League Manager with user info and requested role*/
+            
             return new AuthResponseDto { IsAuthSuccessful = true };
         }
 
@@ -135,7 +143,7 @@ namespace Service
         /// </summary>
         /// <param name="username"></param>
         /// <returns></returns>
-        public async Task<ApplicationUser> GeUserByUsername(string username)
+        public async Task<ApplicationUser> GetUserByUsername(string username)
         {
             return await _repo.GetUserByUsername(username);
         }
@@ -148,7 +156,9 @@ namespace Service
         public async Task<string> GetUserRole(string id)
         {
             ApplicationUser user = await GetUserById(id);
-            return user.RoleName;
+            var role = await _userManager.GetRolesAsync(user);
+            if (role.Count > 0) return role[0];
+            return null;
         }
 
 
@@ -160,7 +170,7 @@ namespace Service
         public async Task<string> GetLoggedInUserId(ClaimsIdentity claimsIdentity)
         {
             var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-            ApplicationUser user = await GeUserByUsername(claim.Value);
+            ApplicationUser user = await GetUserByUsername(claim.Value);
             return user.Id;
         }
 
@@ -230,10 +240,11 @@ namespace Service
         /// <param name="userId"></param>
         /// <param name="roleId"></param>
         /// <returns>modified User</returns>
-        public async Task<ApplicationUser> AddUserRole(string userId, string RoleName)
+        public async Task<ApplicationUser> AddUserRole(string userId, string RoleName, string token)
         {
             ApplicationUser tUser = await GetUserById(userId);
-            await _userManager.RemoveFromRoleAsync(tUser, tUser.RoleName);
+            var role = await _userManager.GetRolesAsync(tUser);
+            if (role.Count > 0) await _userManager.RemoveFromRoleAsync(tUser, role[0]);
             tUser.RoleName = RoleName;
             await _userManager.AddToRoleAsync(tUser, RoleName);
             Guid carpoolId;
@@ -241,9 +252,9 @@ namespace Service
             {
                 using (var httpClient = new HttpClient())
                 {
-                    using var response = await httpClient.GetAsync($"api/League/Team/{tUser.TeamID}");
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    using var response = await httpClient.GetAsync($"api/Team/{tUser.TeamID}");
                     string apiResponse = await response.Content.ReadAsStringAsync();
-
                     var team = JsonConvert.DeserializeObject<TeamDto>(apiResponse);
                     carpoolId = team.CarpoolID;
                 }
@@ -254,9 +265,11 @@ namespace Service
                 };
                 using (var httpClient = new HttpClient())
                 {
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                     var response = await httpClient.PostAsJsonAsync($"api/Message/RecipientLists/Create", rLD);
                 }
             }
+            
             await _repo.CommitSave();
             return tUser;
         }
@@ -270,15 +283,15 @@ namespace Service
         public async Task<ApplicationUser> EditUser(string userId, EditUserDto editUserDto)
         {
             ApplicationUser tUser = await GetUserById(userId);
-
+            var role = await _userManager.GetRolesAsync(tUser);
             if (tUser.FullName != editUserDto.FullName && editUserDto.FullName != "") { tUser.FullName = editUserDto.FullName; }
             if (tUser.Email != editUserDto.Email && !string.IsNullOrEmpty(editUserDto.Email)) { tUser.Email = editUserDto.Email; tUser.NormalizedEmail = editUserDto.Email.ToUpper(); }
             if (tUser.PhoneNumber != editUserDto.PhoneNumber && editUserDto.PhoneNumber != "") { tUser.PhoneNumber = editUserDto.PhoneNumber; }
             if (!string.IsNullOrEmpty(editUserDto.OldPassword) && !string.IsNullOrEmpty(editUserDto.NewPassword)) { await _userManager.ChangePasswordAsync(tUser, editUserDto.OldPassword, editUserDto.NewPassword); }
-            if (tUser.RoleName != editUserDto.RoleName && editUserDto.RoleName != "") { 
-                await _userManager.RemoveFromRoleAsync(tUser, tUser.RoleName); 
-                await _userManager.AddToRoleAsync(tUser, editUserDto.RoleName);
+            if (tUser.RoleName != editUserDto.RoleName && editUserDto.RoleName != "") {
+                if (role.Count > 0) await _userManager.RemoveFromRoleAsync(tUser, role[0]);
                 tUser.RoleName = editUserDto.RoleName;
+                await _userManager.AddToRoleAsync(tUser, editUserDto.RoleName);
             }
             if (tUser.TeamID != editUserDto.TeamID/* && editUserDto.TeamID != null*/) { tUser.TeamID = editUserDto.TeamID; }
 
@@ -301,6 +314,7 @@ namespace Service
         {
             ApplicationUser loggedInUser = await GetUserById(loggedInUserId);
             ApplicationUser userToEdit = await GetUserById(userToEditId);
+            if (loggedInUserId == userToEditId) return true;
             switch(loggedInUser.RoleName){
                 case Roles.A: if (userToEdit.RoleName != Roles.A) return true;
                                 return false;
