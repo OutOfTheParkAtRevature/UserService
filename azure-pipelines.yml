@@ -11,7 +11,7 @@ variables:
 
 
 stages:
-  - stage:
+  - stage: 'Analyze'
     displayName: Analyze
     jobs:
       - job: analyze
@@ -49,7 +49,7 @@ stages:
           - task: SonarCloudPublish@1
             displayName: Publish Code Analysis
 
-  - stage:
+  - stage: 'Build'
     displayName: Build and push
     jobs:
       - job: Build
@@ -76,7 +76,7 @@ stages:
       displayName: Deploy
       pool:
         vmImage: 'ubuntu-latest'
-      # environment: 'dev.default'
+      environment: 'dev.default'
       variables:
       - group: Release
       strategy:
