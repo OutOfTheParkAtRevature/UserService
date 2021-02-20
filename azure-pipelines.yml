@@ -5,7 +5,7 @@ pr:
 - staging
 
 variables:
-  userRepository: 'user'
+  userRepository: 'user-service'
   tag: '$(Build.BuildId)'
   imagePullSecret: 'user'
 
