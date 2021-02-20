@@ -76,7 +76,7 @@ stages:
       displayName: Deploy
       pool:
         vmImage: 'ubuntu-latest'
-      environment: 'dev.default'
+      environment: 'spike.default'
       variables:
       - group: Release
       strategy:
