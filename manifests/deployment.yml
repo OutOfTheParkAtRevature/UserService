@@ -1,19 +1,51 @@
-apiVersion : apps/v1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: user
+  name: user-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: user
+      app: user-service
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 1
+    type: RollingUpdate
   template:
     metadata:
       labels:
-        app: user
+        app: user-service
     spec:
+      volumes:
+        - name: postgres-pv-lodging
+          persistentVolumeClaim:
+            claimName: lodging-pv-claim
       containers:
-        - name: user
+      
+        - name: user-service
+        # - env:
+            # - name: ConnectionStrings__pgsql
+            #   value: 'Host=localhost;Database=LodgingData;Username=postgres;Password=LodgingData@2020;'
+            # - name: ConnectionStrings__zipkin
+            #   value: 'http://zipkin:9411/'
           image: outofthepark15226.azurecr.io/user
+          imagePullPolicy: Always
           ports:
-          - containerPort: 80
+            - containerPort: 80
+              name: user-service-http
+
+        # - env:
+        #     - name: POSTGRES_PASSWORD
+        #       value: LodgingData@2020
+        #   image: postgres:12
+        #   imagePullPolicy: Always
+        #   name: postgres
+        #   ports:
+        #     - containerPort: 5432
+        #       name: postgres-tcp
+        #   volumeMounts:
+        #     - mountPath: /lodging/storage
+        #       name: postgres-pv-lodging
+      # imagePullSecrets:
+      #   - name: github
