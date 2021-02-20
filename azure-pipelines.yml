@@ -60,7 +60,7 @@ stages:
             inputs:
               command: buildAndPush
               buildContext: $(Build.Repository.LocalPath)
-              repository: $(webRepository)
+              repository: $(userRepository)
               dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
               containerRegistry: 'Container Registry Connection'
               tags: |
