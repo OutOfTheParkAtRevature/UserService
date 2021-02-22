@@ -1,12 +1,25 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: user-service
+  name: user-service-deployment
 spec:
   ports:
     - name: user-service
       port: 80
-      targetPort: user-service-http
+      targetPort: user-http
   selector:
     app: user-service
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sql-user-deployment
+spec:
+  selector:
+    app: sql-user
+  ports:
+    - protocol: TCP
+      port: 1433
+      targetPort: 1433
   type: ClusterIP
