@@ -70,7 +70,7 @@ namespace UserService
             return Ok(await _logic.GetUserRole(id));
         }
 
-        [HttpPut("edit/{id}")]
+        [HttpPut("{id}")]
         [Authorize(Roles = "Admin, League Manager, Head Coach, Assistant Coach, Parent")]
         public async Task<ActionResult<UserDto>> EditUser(string id, [FromBody] EditUserDto editedUser)
         {
@@ -84,7 +84,7 @@ namespace UserService
             return _mapper.ConvertUserToUserDto(await _logic.EditUser(id, editedUser));
         }
 
-        [HttpPost("edit/role/{id}")]
+        [HttpPut("role/{id}")]
         [Authorize(Roles = "Admin, League Manager, Head Coach")]
         public async Task<IActionResult> ApproveUserRole(string id, [FromBody] EditUserDto eud)
         {
@@ -94,7 +94,7 @@ namespace UserService
             return Ok(await _logic.AddUserRole(id, eud.RoleName, token));
         }
 
-        [HttpDelete("delete/{id}")]
+        [HttpDelete("{id}")]
         [Authorize(Roles = "Admin, League Manager, Head Coach, Assistant Coach, Parent")]
         public async Task<IActionResult> DeleteUser(string id)
         {
@@ -108,6 +108,22 @@ namespace UserService
 
             if (result) return Ok("User deleted successfully");
             return NotFound("User not found");
+        }
+
+        [HttpGet("roles")]
+        public async Task<IActionResult> GetRoles()
+        {
+            List<RoleDto> roles = await _logic.GetRoles();
+            if (roles == null) return NotFound("No roles in db");
+            return Ok(roles);
+        }
+
+        [HttpGet("roles/{id}")]
+        public async Task<IActionResult> GetRoleById(string id)
+        {
+            RoleDto role = await _logic.GetRoleById(id);
+            if (role == null) return NotFound("No role with that ID was found");
+            return Ok(role);
         }
     }
 }
