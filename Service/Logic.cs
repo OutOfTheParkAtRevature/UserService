@@ -83,6 +83,7 @@ namespace Service
                 await _roleManager.CreateAsync(new IdentityRole(Roles.AC));
                 await _roleManager.CreateAsync(new IdentityRole(Roles.PT));
                 await _roleManager.CreateAsync(new IdentityRole(Roles.PL));
+                await _roleManager.CreateAsync(new IdentityRole(Roles.UU));
             }
 
             ApplicationUser user = new ApplicationUser
@@ -91,7 +92,7 @@ namespace Service
                 PhoneNumber = cud.PhoneNumber,
                 Email = cud.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = cud.UserName,
+                UserName = cud.UserName
             };
             if (cud.TeamID != null) user.TeamID = (Guid)cud.TeamID;
             
@@ -115,15 +116,49 @@ namespace Service
                 var response = await httpClient.PostAsJsonAsync($"api/Message/SendEmail", message);
             }
 
-            await _userManager.AddToRoleAsync(user, cud.RoleName);
+            // Pull current high-rank users if any
+            var admin = await _repo.Users.FirstOrDefaultAsync(x => x.RoleName == "Admin");
+            var leagueManager = await _repo.Users.FirstOrDefaultAsync(x => x.RoleName == "League Manager");
+            var coach = await _repo.Users.FirstOrDefaultAsync(x => x.TeamID == user.TeamID && x.RoleName == "Head Coach");
 
-            //Create notification for Head Coach/League Manager with user info and requested role
-            //allow them to set Role accordingly
+            // Create default Admin user - Seeded
+            if (admin == null && user.NormalizedEmail == "NOREPLYOOTP@GMAIL.COM")
+            {
+                await _userManager.AddToRoleAsync(user, Roles.A);
+            }
+
+            // Notify Admin of new League Manager request - reject if role filled
+            if (leagueManager == null && cud.RoleName == "League Manager")
+            {
+                var adminMessage = new EmailMessage(new string[] { admin.Email }, "New League Manager to confirm", $"User {user.UserName} has been created and has asked for permissions to {cud.RoleName}. Log in to apply the role.", null);
+                using var httpClient = new HttpClient();
+                var response = await httpClient.PostAsJsonAsync($"api/Message/SendEmail", adminMessage);
+            }
+            else if (leagueManager != null)
+            {
+                return new AuthResponseDto { IsAuthSuccessful = false, ErrorMessage = "This League already has a League Manager" };
+            }
             
-            var users = await _userManager.GetUsersInRoleAsync(Roles.A);
-            if (users.Count == 0) await _userManager.AddToRoleAsync(user, Roles.A);
+            //Notify League Manager of Head Coach request - reject if role filled
+            if (coach == null && cud.RoleName == "Head Coach")
+            {
+                var lmMessage = new EmailMessage(new string[] { leagueManager.Email }, "New Head Coach to confirm", $"User {user.UserName} has been created and has asked for permissions to {cud.RoleName}. Log in to apply the role.", null);
+                using var httpClient = new HttpClient();
+                var response = await httpClient.PostAsJsonAsync($"api/Message/SendEmail", lmMessage);
+            }
+            else if (coach != null)
+            {
+                return new AuthResponseDto { IsAuthSuccessful = false, ErrorMessage = "This team already has a Head Coach" };
+            }
 
-            /*Create notification for Head Coach/ League Manager with user info and requested role*/
+            //Notify Head Coach of user registration and set as role with no priveleges
+            if (cud.RoleName == "Parent" || cud.RoleName == "Player" || cud.RoleName == "Assistant Coach")
+            {
+                var coachMessage = new EmailMessage(new string[] { coach.Email }, "New user to confirm", $"User {user.UserName} has been created and has asked for permissions to {cud.RoleName}. Log in to apply a role.", null);
+                using var httpClient = new HttpClient();
+                var response = await httpClient.PostAsJsonAsync($"api/Message/SendEmail", coachMessage);
+            }
+            await _userManager.AddToRoleAsync(user, Roles.UU);
             
             return new AuthResponseDto { IsAuthSuccessful = true };
         }

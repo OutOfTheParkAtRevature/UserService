@@ -14,6 +14,6 @@ namespace Model
         public const string AC = "Assistant Coach";
         public const string PT = "Parent";
         public const string PL = "Player";
-
+        public const string UU = "Unconfirmed User";
     }
 }
