@@ -6,7 +6,7 @@ provisioner: kubernetes.io/azure-disk
 reclaimPolicy: Retain
 allowVolumeExpansion: true
 parameters:
-  kind: Managed
+  kind: dedicated
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
