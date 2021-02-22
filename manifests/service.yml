@@ -11,15 +11,15 @@ spec:
     app: user-service
   type: LoadBalancer
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: sql-user-deployment
-spec:
-  selector:
-    app: sql-user
-  ports:
-    - protocol: TCP
-      port: 1433
-      targetPort: 1433
-  type: ClusterIP
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: sql-user-deployment
+# spec:
+#   selector:
+#     app: sql-user
+#   ports:
+#     - protocol: TCP
+#       port: 1433
+#       targetPort: 1433
+#   type: ClusterIP

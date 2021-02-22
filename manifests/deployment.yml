@@ -17,15 +17,17 @@ spec:
       labels:
         app: user-service
     spec:
-      volumes:
-        - name: azure-disk-user
-          persistentVolumeClaim:
-            claimName: user-pv-claim
+      # volumes:
+      #   - name: azure-disk-user
+      #     persistentVolumeClaim:
+      #       claimName: user-pv-claim
       containers:
         - env:
             # use secret in future
+            # - name: ConnectionString
+            #   value: 'data source=sql-user;database=azure-disk-user;user id=sa;password=password_here;'
             - name: ConnectionString
-              value: 'data source=sql-user;database=azure-disk-user;user id=sa;password=password_here;'
+              value: 'Server=tcp:out-of-the-park-sql-server.database.windows.net,1433;Initial Catalog=user-service-db;Persist Security Info=False;User ID=p3-admin;Password={your_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
           name: user-service
           image: outofthepark15226.azurecr.io/user
           imagePullPolicy: Always
@@ -33,16 +35,16 @@ spec:
             - containerPort: 80
               name: user-http
 
-        - env:
-          - name: ACCEPT_EULA
-            value: "y" 
-          - name: SA_PASSWORD
-          #make this into secret
-            value: password_here
-          image: mcr.microsoft.com/mssql/server:2019-latest
-          name: sql-user
-          ports:
-            - containerPort: 1433
-          volumeMounts:
-            - name: azure-disk-user
-              mountPath: /user/storage
+        # - env:
+        #   - name: ACCEPT_EULA
+        #     value: "y" 
+        #   - name: SA_PASSWORD
+        #   #make this into secret
+        #     value: password_here
+        #   image: mcr.microsoft.com/mssql/server:2019-latest
+        #   name: sql-user
+        #   ports:
+        #     - containerPort: 1433
+        #   volumeMounts:
+        #     - name: azure-disk-user
+        #       mountPath: /var/opt/mssql/data
