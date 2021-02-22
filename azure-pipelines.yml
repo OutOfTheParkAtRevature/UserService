@@ -85,6 +85,18 @@ stages:
             steps:
             - download: current
               artifact: manifests
+
+
+            - task: KubectlInstaller@0
+              inputs:
+                kubectlVersion: 'latest'
+            - task: Kubernetes@1
+              inputs:
+                connectionType: 'Kubernetes Service Connection'
+                kubernetesServiceEndpoint: 'Kubernetes Cluster Connection'
+                namespace: 'default'
+                command: 'login'
+
             - task: KubernetesManifest@0
               displayName: Create imagePullSecret
               inputs:
@@ -109,3 +121,8 @@ stages:
                   $(imagePullSecret)
                 containers: |
                   $(RegistryName)/$(userRepository):$(tag)
+            
+
+            - task: Kubernetes@1
+              inputs:
+                command: 'logout'
