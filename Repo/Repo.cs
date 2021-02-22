@@ -3,9 +3,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Model;
 using Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -53,51 +57,92 @@ namespace Repository
 
         public async Task SeedUsers()
         {
-            if (!await _roleManager.RoleExistsAsync(Roles.A))
+            if (!Users.Any())
             {
-                await _roleManager.CreateAsync(new IdentityRole(Roles.A));
-                await _roleManager.CreateAsync(new IdentityRole(Roles.LM));
-                await _roleManager.CreateAsync(new IdentityRole(Roles.HC));
-                await _roleManager.CreateAsync(new IdentityRole(Roles.AC));
-                await _roleManager.CreateAsync(new IdentityRole(Roles.PT));
-                await _roleManager.CreateAsync(new IdentityRole(Roles.PL));
-            }
-            string[] userNames = { "CooperJoe", "RemerDoug", "ScolariKenny", "MartinRobert", "UnderwoodCarolyn", "CooperGavin", "RemerMax",
+                if (!await _roleManager.RoleExistsAsync(Roles.A))
+                {
+                    await _roleManager.CreateAsync(new IdentityRole(Roles.A));
+                    await _roleManager.CreateAsync(new IdentityRole(Roles.LM));
+                    await _roleManager.CreateAsync(new IdentityRole(Roles.HC));
+                    await _roleManager.CreateAsync(new IdentityRole(Roles.AC));
+                    await _roleManager.CreateAsync(new IdentityRole(Roles.PT));
+                    await _roleManager.CreateAsync(new IdentityRole(Roles.PL));
+                }
+                string[] userNames = { "CooperJoe", "RemerDoug", "ScolariKenny", "MartinRobert", "UnderwoodCarolyn", "CooperGavin", "RemerMax",
                                    "ScolariLiam", "MartinStewart", "UnderwoodColin", "WalshSteven", "AbrahamVictor", "AlsopDiana" };
-            string[] passwords = { "Nonmeteorically1", "Airsickness2", "Exemplarily3", "Nonsobriety4", "Ileocolitis5", "Tittivating6", "Preconcentrating7",
+                string[] passwords = { "Nonmeteorically1", "Airsickness2", "Exemplarily3", "Nonsobriety4", "Ileocolitis5", "Tittivating6", "Preconcentrating7",
                                    "Vascularization8", "Semidigested9", "Strumectomy0", "Fumigate1", "Geometrically2", "Superoccipital3" };
-            string[] names = {  "Joe Cooper", "Doug Remer", "Kenny Scolari", "Robert Martin", "Carolyn Underwood", "Gavin Cooper", "Max Remer",
+                string[] names = {  "Joe Cooper", "Doug Remer", "Kenny Scolari", "Robert Martin", "Carolyn Underwood", "Gavin Cooper", "Max Remer",
                                 "Liam Scolari", "Stewart Martin", "Colin Underwood", "Steven Walsh", "Victor Abraham", "Diana Alsop" };
-            string[] phonenumbers = { "414-555-6548", "414-555-6453", "414-555-1056", "414-555-3546", "414-555-4356", "414-555-3685",
+                string[] phonenumbers = { "414-555-6548", "414-555-6453", "414-555-1056", "414-555-3546", "414-555-4356", "414-555-3685",
                                       "414-555-3257", "414-555-3428", "414-555-7839", "414-555-4523", "414-555-3658", "469-555-4387", "973-555-1654" };
-            string[] emails = { "CooperJoe@Tigers.com", "RemerDoug@Tigers.com", "ScolariKenny@Tigers.com",
+                string[] emails = { "CooperJoe@Tigers.com", "RemerDoug@Tigers.com", "ScolariKenny@Tigers.com",
                                 "MartinRobert@Tigers.com", "UnderwoodCarolyn@Tigers.com", "CooperGavin@Tigers.com", "RemerMax@Tigers.com",
                                 "ScolariLiam@Tigers.com", "MartinStewart@Tigers.com", "UnderwoodColin@Tigers.com", "WalshSteven@Tigers.com",
                                 "AbrahamVictor@Tigers.com", "AlsopDiana@Tigers.com" };
-            string[] roles = { "Parent", "Parent", "Parent", "Parent", "Parent", "Player", "Player", "Player", "Player", "Player", "Coach", "AssistantCoach" };
-
-            Guid teamId = Guid.NewGuid();
-            List<string> CarpoolList = new List<string>();
-            for (int i = 0; i < userNames.Length; i++)
-            {
-                ApplicationUser user = new ApplicationUser
+                string[] roles = { "Parent", "Parent", "Parent", "Parent", "Parent", "Player", "Player", "Player", "Player", "Player", "Coach", "AssistantCoach" };
+                Guid teamId;
+                using (var httpClient = new HttpClient())
                 {
-                    FullName = names[i],
-                    PhoneNumber = phonenumbers[i],
-                    Email = emails[i],
-                    SecurityStamp = Guid.NewGuid().ToString(),
-                    UserName = userNames[i],
-                    TeamID = teamId
-                };
-                await Users.AddAsync(user);
-                if (user.RoleName == "Parent")
-                {
-                    CarpoolList.Add(user.Id);
+                    var response = await httpClient.PostAsJsonAsync($"api/Team/CreateTeam", "Tigers");
+                    var response2 = await httpClient.PostAsJsonAsync($"api/Team/CreateTeam", "Lions");
+                    var response3 = await httpClient.PostAsJsonAsync($"api/Team/CreateTeam", "Bears");
                 }
-                await _userManager.CreateAsync(user, passwords[i]);
-                await _userManager.AddToRoleAsync(user, roles[i]);
+                using (var httpClient = new HttpClient())
+                {
+                    using var response = await httpClient.GetAsync($"api/Team/name/Tigers");
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    var team = JsonConvert.DeserializeObject<TeamDto>(apiResponse);
+                    teamId = team.TeamID;
+                }
+
+                List<string> CarpoolList = new List<string>();
+                for (int i = 0; i < userNames.Length; i++)
+                {
+                    ApplicationUser user = new ApplicationUser
+                    {
+                        FullName = names[i],
+                        PhoneNumber = phonenumbers[i],
+                        Email = emails[i],
+                        SecurityStamp = Guid.NewGuid().ToString(),
+                        UserName = userNames[i],
+                        TeamID = teamId
+                    };
+                    await Users.AddAsync(user);
+                    if (user.RoleName == "Parent")
+                    {
+                        CarpoolList.Add(user.Id);
+                    }
+                    await _userManager.CreateAsync(user, passwords[i]);
+                    await _userManager.AddToRoleAsync(user, roles[i]);
+                }
+
+                ApplicationUser lmUser = new ApplicationUser
+                {
+                    FullName = "LeagueManager",
+                    PhoneNumber = "123-456-7890",
+                    Email = "outoftheparkcalendar@gmail.com",
+                    SecurityStamp = Guid.NewGuid().ToString(),
+                    UserName = "LeagueManager",
+                    TeamID = Guid.NewGuid()
+                };
+                await _userManager.CreateAsync(lmUser, "OOTPLeaMan0-");
+                await _userManager.AddToRoleAsync(lmUser, "League Manager");
+
+                ApplicationUser adminUser = new ApplicationUser
+                {
+                    FullName = "Administrator",
+                    PhoneNumber = "123-456-7890",
+                    Email = "noreplyootp@gmail.com",
+                    SecurityStamp = Guid.NewGuid().ToString(),
+                    UserName = "Admin",
+                    TeamID = Guid.NewGuid()
+                };
+                await _userManager.CreateAsync(adminUser, "OOTPAdmin0-");
+                await _userManager.AddToRoleAsync(adminUser, "Admin");
+
+                await CommitSave();
             }
-            await CommitSave();
         }
     }
 }
