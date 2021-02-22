@@ -1,29 +1,23 @@
-# kind: PersistentVolume
-# apiVersion: v1
-# metadata:
-#   name: postgres-pv-lodging
-#   labels:
-#     type: local
-#     app: postgres
-# spec:
-#   storageClassName: manual
-#   capacity:
-#     storage: 4Gi
-#   accessModes:
-#     - ReadWriteMany
-#   hostPath:
-#     path: '/mtn/data'
-# ---
-# kind: PersistentVolumeClaim
-# apiVersion: v1
-# metadata:
-#   name: lodging-pv-claim
-#   labels:
-#     app: postgres
-# spec:
-#   storageClassName: manual
-#   accessModes:
-#     - ReadWriteMany
-#   resources:
-#     requests:
-#       storage: 1Gi
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+     name: azure-disk-user
+provisioner: kubernetes.io/azure-disk
+parameters:
+  storageaccounttype: Standard_LRS
+  location: eastus
+  kind: Managed
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: user-pv-claim
+  labels:
+    app: sql-user
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 4Gi

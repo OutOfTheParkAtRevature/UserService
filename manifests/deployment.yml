@@ -18,34 +18,33 @@ spec:
         app: user-service
     spec:
       volumes:
-        - name: postgres-pv-lodging
+        - name: azure-disk-user
           persistentVolumeClaim:
-            claimName: lodging-pv-claim
+            claimName: user-pv-claim
       containers:
-      
-        - name: user-service
-        # - env:
-            # - name: ConnectionStrings__pgsql
-            #   value: 'Host=localhost;Database=LodgingData;Username=postgres;Password=LodgingData@2020;'
+        - env:
+            
+            - name: ConnectionString
+              value: 'data source=sql-user;database=azure-disk-user;user id=sa;password=password_here;'
             # - name: ConnectionStrings__zipkin
             #   value: 'http://zipkin:9411/'
+          name: user-service
           image: outofthepark15226.azurecr.io/user
           imagePullPolicy: Always
           ports:
             - containerPort: 80
-              name: user-service-http
+              name: user-http
 
-        # - env:
-        #     - name: POSTGRES_PASSWORD
-        #       value: LodgingData@2020
-        #   image: postgres:12
-        #   imagePullPolicy: Always
-        #   name: postgres
-        #   ports:
-        #     - containerPort: 5432
-        #       name: postgres-tcp
-        #   volumeMounts:
-        #     - mountPath: /lodging/storage
-        #       name: postgres-pv-lodging
-      # imagePullSecrets:
-      #   - name: github
+        - env:
+          - name: ACCEPT_EULA
+            value: "y" 
+          - name: SA_PASSWORD
+          #make this into secret
+            value: password_here
+          image: mcr.microsoft.com/mssql/server:2019-latest
+          name: sql-user
+          ports:
+            - containerPort: 1433
+          volumeMounts:
+            - name: azure-disk-user
+              mountPath: /user/storage
