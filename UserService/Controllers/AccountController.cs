@@ -30,6 +30,7 @@ namespace UserService.Controllers
         }
 
         [HttpPost("create")]
+        [AllowAnonymous]
         public async Task<IActionResult> Create([FromBody] CreateUserDto cud)
         {
             var userExists = await _userManager.FindByNameAsync(cud.UserName);
@@ -70,6 +71,7 @@ namespace UserService.Controllers
 
         [HttpPost("ForgotPassword")]
         [ValidateAntiForgeryToken]
+        [AllowAnonymous]
         public async Task<IActionResult> ForgotPassword(ForgotPassword forgotPassword)
         {
             if (!ModelState.IsValid)
@@ -87,6 +89,7 @@ namespace UserService.Controllers
 
         [HttpPost("ResetPassword")]
         [ValidateAntiForgeryToken]
+        [AllowAnonymous]
         public async Task<IActionResult> ResetPassword(ResetPassword resetPassword)
         {
             if (!ModelState.IsValid)
