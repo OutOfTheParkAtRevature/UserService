@@ -11,6 +11,7 @@ using Repository;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -99,7 +100,7 @@ namespace Service
             await _repo.Users.AddAsync(user);
             if (!result.Succeeded)
             {
-                return new AuthResponseDto { IsAuthSuccessful = false, ErrorMessage = result.Errors.ToString() };
+                return new AuthResponseDto { IsAuthSuccessful = false, ErrorMessage = result.ToString() };
             }
 
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -126,6 +127,28 @@ namespace Service
             /*Create notification for Head Coach/ League Manager with user info and requested role*/
             
             return new AuthResponseDto { IsAuthSuccessful = true };
+        }
+
+        public async Task<List<RoleDto>> GetRoles()
+        {
+            if (_roleManager.SupportsQueryableRoles) { 
+                List<IdentityRole> iRoles = await _roleManager.Roles.ToListAsync();
+                List<RoleDto> roles = new List<RoleDto>();
+                foreach(IdentityRole r in iRoles)
+                {
+                    RoleDto role = new RoleDto { RoleId = r.Id, RoleName = r.Name };
+                    roles.Add(role);
+                }
+                return roles;
+            }
+            return null;
+        }
+
+        public async Task<RoleDto> GetRoleById(string id)
+        {
+            IdentityRole role = await _roleManager.FindByIdAsync(id);
+            RoleDto roleDto = new RoleDto { RoleId = role.Id, RoleName = role.Name };
+            return roleDto;
         }
 
         /// <summary>
