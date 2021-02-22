@@ -23,11 +23,9 @@ spec:
             claimName: user-pv-claim
       containers:
         - env:
-            
+            # use secret in future
             - name: ConnectionString
               value: 'data source=sql-user;database=azure-disk-user;user id=sa;password=password_here;'
-            # - name: ConnectionStrings__zipkin
-            #   value: 'http://zipkin:9411/'
           name: user-service
           image: outofthepark15226.azurecr.io/user
           imagePullPolicy: Always
