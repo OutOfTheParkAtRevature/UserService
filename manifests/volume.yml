@@ -1,11 +1,11 @@
-kind: PersistentVolume
+kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:
      name: azure-disk-user
 provisioner: kubernetes.io/azure-disk
+reclaimPolicy: Retain
+allowVolumeExpansion: true
 parameters:
-  storageaccounttype: Standard_LRS
-  location: eastus
   kind: Managed
 ---
 apiVersion: v1
