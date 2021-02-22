@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Model;
 using Model.DataTransfer;
 using Models;
 using Models.DataTransfer;
@@ -9,6 +10,8 @@ using Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 
 namespace UserService.Controllers
@@ -62,6 +65,44 @@ namespace UserService.Controllers
             var confirmResult = await _userManager.ConfirmEmailAsync(user, token);
             if (!confirmResult.Succeeded)
                 return BadRequest("Invalid Email Confirmation Request");
+            return Ok();
+        }
+
+        [HttpPost("ForgotPassword")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgotPassword(ForgotPassword forgotPassword)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var user = await _userManager.FindByEmailAsync(forgotPassword.Email);
+            if (user == null)
+                return BadRequest(ModelState);
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var callback = Url.Action(nameof(ResetPassword), "Account", new { token, email = user.Email }, Request.Scheme);
+            var message = new EmailMessage(new string[] { user.Email }, "Reset password token", callback, null);
+            using var httpClient = new HttpClient();
+            var response = await httpClient.PostAsJsonAsync($"api/Message/SendEmail", message);
+            return Ok();
+        }
+
+        [HttpPost("ResetPassword")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPassword(ResetPassword resetPassword)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var user = await _userManager.FindByEmailAsync(resetPassword.Email);
+            if (user == null)
+                return BadRequest(ModelState);
+            var resetPassResult = await _userManager.ResetPasswordAsync(user, resetPassword.Token, resetPassword.Password);
+            if (!resetPassResult.Succeeded)
+            {
+                //foreach (var error in resetPassResult.Errors)
+                //{
+                //    ModelState.TryAddModelError(error.Code, error.Description);
+                //}
+                return BadRequest(ModelState);
+            }
             return Ok();
         }
     }
