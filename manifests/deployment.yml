@@ -17,10 +17,10 @@ spec:
       labels:
         app: user-service
     spec:
-      volumes:
-        - name: azure-disk-user
-          persistentVolumeClaim:
-            claimName: user-pv-claim
+      # volumes:
+      #   - name: azure-disk-user
+      #     persistentVolumeClaim:
+      #       claimName: user-pv-claim
       containers:
         - env:
             # use secret in future
