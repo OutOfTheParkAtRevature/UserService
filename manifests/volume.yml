@@ -1,4 +1,4 @@
-kind: StorageClass
+kind: PersistentVolume
 apiVersion: storage.k8s.io/v1
 metadata:
      name: azure-disk-user
