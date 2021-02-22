@@ -96,7 +96,6 @@ namespace Repository
                     teamId = team.TeamID;
                 }
 
-                List<string> CarpoolList = new List<string>();
                 for (int i = 0; i < userNames.Length; i++)
                 {
                     ApplicationUser user = new ApplicationUser
@@ -109,10 +108,7 @@ namespace Repository
                         TeamID = teamId
                     };
                     await Users.AddAsync(user);
-                    if (user.RoleName == "Parent")
-                    {
-                        CarpoolList.Add(user.Id);
-                    }
+
                     await _userManager.CreateAsync(user, passwords[i]);
                     await _userManager.AddToRoleAsync(user, roles[i]);
                 }
