@@ -11,7 +11,7 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: deployment-reader
+  name: deployment-admin
 subjects:
 - kind: ServiceAccount
   name: devops-admin
@@ -20,8 +20,8 @@ subjects:
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: deployment-reader
+  name: deployment-admin
 rules:
 - apiGroups: ["extensions", "apps"]
-  resources: ["deployments", "secrets"]
+  resources: ["deployments", "secrets", "storageclasses"]
   verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
