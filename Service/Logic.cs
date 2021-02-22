@@ -74,7 +74,7 @@ namespace Service
         /// <returns>UserLoggedInDto</returns>
         public async Task<AuthResponseDto> CreateUser(CreateUserDto cud)
         {
-            //await _repo.SeedUsers();
+            await _repo.SeedUsers();
             if (!await _roleManager.RoleExistsAsync(Roles.A))
             {
                 await _roleManager.CreateAsync(new IdentityRole(Roles.A));
