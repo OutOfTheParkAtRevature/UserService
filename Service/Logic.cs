@@ -11,15 +11,10 @@ using Repository;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Net.Mail;
 using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Service
@@ -65,7 +60,6 @@ namespace Service
             return uld;
         }
 
-
         /// <summary>
         /// Takes CreateUserDto from controller, creates a user, creates roles if they don't exists,
         /// adds user to Player role, sends a notification to an admin user to approve their originally requested role and 
@@ -75,7 +69,9 @@ namespace Service
         /// <returns>UserLoggedInDto</returns>
         public async Task<AuthResponseDto> CreateUser(CreateUserDto cud)
         {
+            // Try to seed data if AspNetUsers table is empty
             await _repo.SeedUsers();
+            // Build IdentityRoles
             if (!await _roleManager.RoleExistsAsync(Roles.A))
             {
                 await _roleManager.CreateAsync(new IdentityRole(Roles.A));
@@ -96,14 +92,14 @@ namespace Service
                 UserName = cud.UserName
             };
             if (cud.TeamID != null) user.TeamID = (Guid)cud.TeamID;
-            
+            // Create new User via UserManager
             var result = await _userManager.CreateAsync(user, cud.Password);
             await _repo.Users.AddAsync(user);
             if (!result.Succeeded)
             {
                 return new AuthResponseDto { IsAuthSuccessful = false, ErrorMessage = result.ToString() };
             }
-
+            // Send Email Confirmation token
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             var param = new Dictionary<string, string>
             {
@@ -164,6 +160,10 @@ namespace Service
             return new AuthResponseDto { IsAuthSuccessful = true };
         }
 
+        /// <summary>
+        /// Get a List of IdentityRoles
+        /// </summary>
+        /// <returns></returns>
         public async Task<List<RoleDto>> GetRoles()
         {
             if (_roleManager.SupportsQueryableRoles) { 
@@ -248,9 +248,6 @@ namespace Service
             return userDtos;
         }
 
-        
-
-        
         /// <summary>
         /// Checks if user or email already exists in DB
         /// </summary>
@@ -259,7 +256,6 @@ namespace Service
         /// <returns>Boolean</returns>
         public async Task<bool> UserExists(string username, string email)
         {
-            // should be && so that username and email are both unique right?
             bool userExists = await _repo.Users.AnyAsync(x => x.UserName == username && x.Email == email);
             if (userExists)
             {
@@ -268,7 +264,6 @@ namespace Service
             }
             return userExists;
         }
-        
         
         /// <summary>
         /// Delete user from context by ID and return true if user deleted, false if not
@@ -306,6 +301,7 @@ namespace Service
             tUser.RoleName = RoleName;
             await _userManager.AddToRoleAsync(tUser, RoleName);
             Guid carpoolId;
+            // Add Parent to Carpool Recipient List
             if (RoleName == "Parent")
             {
                 using (var httpClient = new HttpClient())
@@ -357,7 +353,6 @@ namespace Service
             return tUser;
         }
 
-
         /// <summary>
         /// Checks to see if the logged in user is allowed to alter a given user:
         /// Admins can alter all users besides other Admins.
@@ -382,9 +377,6 @@ namespace Service
                                 return false;
                 default: return false;
             }
-
-
         }
-        
     }
 }

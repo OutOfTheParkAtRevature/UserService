@@ -231,7 +231,7 @@ namespace Repository.Migrations
                     b.Property<string>("RoleName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("StatLineID")
+                    b.Property<Guid?>("StatLineID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("TeamID")

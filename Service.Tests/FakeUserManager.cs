@@ -4,7 +4,6 @@ using Microsoft.Extensions.Options;
 using Models;
 using Moq;
 using System;
-using System.Collections.Generic;
 
 namespace Service.Tests
 {

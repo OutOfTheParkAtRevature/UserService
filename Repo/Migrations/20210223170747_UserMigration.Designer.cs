@@ -10,8 +10,8 @@ using Repository;
 namespace Repository.Migrations
 {
     [DbContext(typeof(UserContext))]
-    [Migration("20210218161522_users")]
-    partial class users
+    [Migration("20210223170747_UserMigration")]
+    partial class UserMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -233,7 +233,7 @@ namespace Repository.Migrations
                     b.Property<string>("RoleName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("StatLineID")
+                    b.Property<Guid?>("StatLineID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("TeamID")

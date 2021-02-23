@@ -1,9 +1,5 @@
-﻿using Model;
-using Models;
+﻿using Models;
 using Models.DataTransfer;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Service
 {

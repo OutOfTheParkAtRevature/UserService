@@ -30,8 +30,7 @@ namespace Service
             {
                 new Claim(ClaimTypes.Name, user.Email),
                 new Claim(ClaimTypes.NameIdentifier, user.UserName),
-                new Claim(ClaimTypes.GroupSid, user.TeamID.ToString()),
-
+                new Claim(ClaimTypes.GroupSid, user.TeamID.ToString())
             };
             return claims;
         }
