@@ -34,17 +34,32 @@ spec:
           ports:
             - containerPort: 80
               name: user-http
-
-        # - env:
-        #   - name: ACCEPT_EULA
-        #     value: "y" 
-        #   - name: SA_PASSWORD
-        #   #make this into secret
-        #     value: password_here
-        #   image: mcr.microsoft.com/mssql/server:2019-latest
-        #   name: sql-user
-        #   ports:
-        #     - containerPort: 1433
-        #   volumeMounts:
-        #     - name: azure-disk-user
-        #       mountPath: /var/opt/mssql/data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service-deployment
+spec:
+  ports:
+    - name: user-service
+      port: 80
+      targetPort: user-http
+  selector:
+    app: user-service
+  # type: LoadBalancer
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: user-service
+  annotations:
+    kubernetes.io/ingress.class: addon-http-application-routing
+spec:
+  rules:
+  - host: user-service.1c50b018f5784721b39b.eastus.aksapp.io
+    http:
+      paths:
+      - backend:
+          serviceName: user-service-deployment
+          servicePort: 80
+        path: /user-service(/|$)(.*)
