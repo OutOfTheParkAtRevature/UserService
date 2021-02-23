@@ -105,7 +105,8 @@ namespace Repository
                         Email = emails[i],
                         SecurityStamp = Guid.NewGuid().ToString(),
                         UserName = userNames[i],
-                        TeamID = teamId
+                        TeamID = teamId,
+                        EmailConfirmed = true
                     };
                     await Users.AddAsync(user);
 
@@ -120,7 +121,8 @@ namespace Repository
                     Email = "outoftheparkcalendar@gmail.com",
                     SecurityStamp = Guid.NewGuid().ToString(),
                     UserName = "LeagueManager",
-                    TeamID = Guid.NewGuid()
+                    TeamID = Guid.NewGuid(),
+                    EmailConfirmed = true
                 };
                 await _userManager.CreateAsync(lmUser, "OOTPLeaMan0-");
                 await _userManager.AddToRoleAsync(lmUser, "League Manager");
@@ -132,7 +134,8 @@ namespace Repository
                     Email = "noreplyootp@gmail.com",
                     SecurityStamp = Guid.NewGuid().ToString(),
                     UserName = "Admin",
-                    TeamID = Guid.NewGuid()
+                    TeamID = Guid.NewGuid(),
+                    EmailConfirmed = true
                 };
                 await _userManager.CreateAsync(adminUser, "OOTPAdmin0-");
                 await _userManager.AddToRoleAsync(adminUser, "Admin");
