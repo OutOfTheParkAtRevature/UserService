@@ -82,7 +82,7 @@ spec:
           serviceName: user-service-deployment
           servicePort: 80
         path: /api/account(/|$)(.*)
-      - frontend:
+      - backend:
           serviceName: user-service-deployment
           servicePort: 80
         path: /(/|$)(.*)
