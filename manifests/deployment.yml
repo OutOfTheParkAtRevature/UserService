@@ -61,7 +61,7 @@ spec:
       targetPort: user-http
   selector:
     app: user-service
-  # type: LoadBalancer
+  type: LoadBalancer
 ---
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
@@ -99,8 +99,3 @@ spec:
           serviceName: user-service-deployment
           servicePort: 80
         path: /api/account
-      - pathType: Prefix
-        backend:
-          serviceName: user-service-deployment
-          servicePort: 80
-        path: /
