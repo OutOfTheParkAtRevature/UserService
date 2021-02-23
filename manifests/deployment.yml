@@ -48,3 +48,54 @@ spec:
         #   volumeMounts:
         #     - name: azure-disk-user
         #       mountPath: /var/opt/mssql/data
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service-deployment
+spec:
+  ports:
+    - name: user-service
+      port: 80
+      targetPort: user-http
+  selector:
+    app: user-service
+  type: LoadBalancer
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: user-service-ingress
+  annotations:
+    kubernetes.io/ingress.class: addon-http-application-routing
+spec:
+  rules:
+  - host: user-service.1c50b018f5784721b39b.eastus.aksapp.io
+    http:
+      paths:
+      - pathType: Prefix
+        backend:
+          serviceName: user-service-deployment
+          servicePort: 80
+        path: /api/user
+      - pathType: Prefix
+        backend:
+          serviceName: user-service-deployment
+          servicePort: 80
+        path: /api/user/role
+      - pathType: Prefix
+        backend:
+          serviceName: user-service-deployment
+          servicePort: 80
+        path: /api/user/roles
+      - pathType: Prefix
+        backend:
+          serviceName: user-service-deployment
+          servicePort: 80
+        path: /api/user/username
+      - pathType: Prefix
+        backend:
+          serviceName: user-service-deployment
+          servicePort: 80
+        path: /api/account

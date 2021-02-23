@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Xunit;
+using Models.DataTransfer;
 
 namespace Model.Tests
 {
@@ -55,29 +56,14 @@ namespace Model.Tests
         [Fact]
         public void ValidateUserForAuthenticationDto()
         {
-            var authentication = new UserForAuthenticationDto
+            var authentication = new LoginDto
             {
-                Email="something@email.com",
+                UserName="uniqueUsername",
                 Password="somethingSecure"
             };
 
             var errorcount = ValidateModel(authentication).Count;
             Assert.Equal(0, errorcount);
-        }
-        /// <summary>
-        /// Makes sure the User Model doesn't accept empty fields for email and password
-        /// </summary>
-        [Fact]
-        public void InvalidateUserForAuthenticationDto()
-        {
-            var authentication = new UserForAuthenticationDto
-            {
-            };
-
-            var results = ValidateModel(authentication);
-            Assert.True(results.Count > 0);
-            Assert.Contains(results, v => v.MemberNames.Contains("Email"));
-            Assert.Contains(results, v => v.MemberNames.Contains("Password"));
         }
 
     }
