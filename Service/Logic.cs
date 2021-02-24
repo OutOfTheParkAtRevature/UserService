@@ -110,7 +110,7 @@ namespace Service
             var message = new EmailMessage(new string[] { user.Email }, "Email Confirmation token", callback, null);
             using (var httpClient = new HttpClient())
             {
-                var response = await httpClient.PostAsJsonAsync($"api/Message/SendEmail", message);
+                var response = await httpClient.PostAsJsonAsync($"http://20.185.100.57:80/api/Message/SendEmail", message);
             }
 
             // Pull current high-rank users if any
@@ -129,7 +129,7 @@ namespace Service
             {
                 var adminMessage = new EmailMessage(new string[] { admin.Email }, "New League Manager to confirm", $"User {user.UserName} has been created and has asked for permissions to {cud.RoleName}. Log in to apply the role.", null);
                 using var httpClient = new HttpClient();
-                var response = await httpClient.PostAsJsonAsync($"api/Message/SendEmail", adminMessage);
+                var response = await httpClient.PostAsJsonAsync($"http://20.185.100.57:80/api/Message/SendEmail", adminMessage);
             }
             else if (leagueManager != null)
             {
@@ -141,7 +141,7 @@ namespace Service
             {
                 var lmMessage = new EmailMessage(new string[] { leagueManager.Email }, "New Head Coach to confirm", $"User {user.UserName} has been created and has asked for permissions to {cud.RoleName}. Log in to apply the role.", null);
                 using var httpClient = new HttpClient();
-                var response = await httpClient.PostAsJsonAsync($"api/Message/SendEmail", lmMessage);
+                var response = await httpClient.PostAsJsonAsync($"http://20.185.100.57:80/api/Message/SendEmail", lmMessage);
             }
             else if (coach != null)
             {
@@ -153,7 +153,7 @@ namespace Service
             {
                 var coachMessage = new EmailMessage(new string[] { coach.Email }, "New user to confirm", $"User {user.UserName} has been created and has asked for permissions to {cud.RoleName}. Log in to apply a role.", null);
                 using var httpClient = new HttpClient();
-                var response = await httpClient.PostAsJsonAsync($"api/Message/SendEmail", coachMessage);
+                var response = await httpClient.PostAsJsonAsync($"http://20.185.100.57:80/api/Message/SendEmail", coachMessage);
             }
             await _userManager.AddToRoleAsync(user, Roles.UU);
             
@@ -307,7 +307,7 @@ namespace Service
                 using (var httpClient = new HttpClient())
                 {
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                    using var response = await httpClient.GetAsync($"api/Team/{tUser.TeamID}");
+                    using var response = await httpClient.GetAsync("http://20.62.247.144:80/api/Team/" + $"{tUser.TeamID}");
                     string apiResponse = await response.Content.ReadAsStringAsync();
                     var team = JsonConvert.DeserializeObject<TeamDto>(apiResponse);
                     carpoolId = team.CarpoolID;
@@ -320,7 +320,7 @@ namespace Service
                 using (var httpClient = new HttpClient())
                 {
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                    var response = await httpClient.PostAsJsonAsync($"api/Message/RecipientLists/Create", rLD);
+                    var response = await httpClient.PostAsJsonAsync($"http://20.185.100.57:80/api/Message/RecipientLists/Create", rLD);
                 }
             }
             
@@ -347,7 +347,7 @@ namespace Service
                 tUser.RoleName = editUserDto.RoleName;
                 await _userManager.AddToRoleAsync(tUser, editUserDto.RoleName);
             }
-            if (tUser.TeamID != editUserDto.TeamID/* && editUserDto.TeamID != null*/) { tUser.TeamID = editUserDto.TeamID; }
+            if (tUser.TeamID != editUserDto.TeamID) { tUser.TeamID = editUserDto.TeamID; }
 
             await _repo.CommitSave();
             return tUser;

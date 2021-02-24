@@ -10,8 +10,8 @@ using Repository;
 namespace Repository.Migrations
 {
     [DbContext(typeof(UserContext))]
-    [Migration("20210223170747_UserMigration")]
-    partial class UserMigration
+    [Migration("20210224155424_InitializeUserDB")]
+    partial class InitializeUserDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

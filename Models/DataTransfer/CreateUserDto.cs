@@ -22,6 +22,6 @@ namespace Models.DataTransfer
         public Guid? TeamID { get; set; }
         [DisplayName("Role Name")]
         public string RoleName { get; set; }
-        public string ClientURI { get; set; } = "http://localhost:4200/Account/EmailConfirmation";
+        public string ClientURI { get; set; } = "http://20.62.210.88:80/api/Account/EmailConfirmation";
     }
 }

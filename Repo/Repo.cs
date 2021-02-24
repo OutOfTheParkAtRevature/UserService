@@ -81,13 +81,13 @@ namespace Repository
                 Guid teamId;
                 using (var httpClient = new HttpClient())
                 {
-                    var response = await httpClient.PostAsJsonAsync($"api/Team/CreateTeam", "Tigers");
-                    var response2 = await httpClient.PostAsJsonAsync($"api/Team/CreateTeam", "Lions");
-                    var response3 = await httpClient.PostAsJsonAsync($"api/Team/CreateTeam", "Bears");
+                    var response = await httpClient.PostAsJsonAsync($"http://20.62.247.144:80/api/Team/CreateTeam", "Tigers");
+                    var response2 = await httpClient.PostAsJsonAsync($"http://20.62.247.144:80/api/Team/CreateTeam", "Lions");
+                    var response3 = await httpClient.PostAsJsonAsync($"http://20.62.247.144:80/api/Team/CreateTeam", "Bears");
                 }
                 using (var httpClient = new HttpClient())
                 {
-                    using var response = await httpClient.GetAsync($"api/Team/name/Tigers");
+                    using var response = await httpClient.GetAsync($"http://20.62.247.144:80/api/Team/name/Tigers");
                     string apiResponse = await response.Content.ReadAsStringAsync();
                     var team = JsonConvert.DeserializeObject<TeamDto>(apiResponse);
                     teamId = team.TeamID;

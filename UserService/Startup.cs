@@ -40,7 +40,7 @@ namespace UserService
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "UserService", Version = "v1" });
             });
 
-            services.AddDbContext<UserContext>(options => options.UseSqlServer(Configuration.GetConnectionString("LocalDB")));
+            services.AddDbContext<UserContext>(options => options.UseSqlServer(Configuration.GetConnectionString("AzureDB")));
             
             // ASP.NET Core Identity for authentication
             services.AddIdentity<ApplicationUser, IdentityRole>
