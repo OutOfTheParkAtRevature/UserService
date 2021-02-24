@@ -2,11 +2,15 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Model;
 using Model.DataTransfer;
 using Models;
 using Models.DataTransfer;
+using Newtonsoft.Json;
 using Service;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -48,7 +52,20 @@ namespace UserService
         {
             ApplicationUser user = await _logic.GetUserByUsername(username);
             if (user == null) return NotFound("No user with that username found");
-            return Ok(_mapper.ConvertUserToUserDto(user));
+            UserDto userDto = _mapper.ConvertUserToUserDto(user);
+
+            var token = await HttpContext.GetTokenAsync("access_token");
+            using (var httpClient = new HttpClient())
+            {
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                var response = await httpClient.GetAsync($"api/Team/{userDto.TeamID}");
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                var team = JsonConvert.DeserializeObject<TeamDto>(apiResponse);
+                userDto.Team = team;
+            }
+
+            return Ok(userDto);
         }
 
         [HttpGet("role/{id}")]
