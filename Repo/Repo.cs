@@ -64,6 +64,7 @@ namespace Repository
                     await _roleManager.CreateAsync(new IdentityRole(Roles.AC));
                     await _roleManager.CreateAsync(new IdentityRole(Roles.PT));
                     await _roleManager.CreateAsync(new IdentityRole(Roles.PL));
+                    await _roleManager.CreateAsync(new IdentityRole(Roles.UU));
                 }
                 string[] userNames = { "CooperJoe", "RemerDoug", "ScolariKenny", "MartinRobert", "UnderwoodCarolyn", "CooperGavin", "RemerMax",
                                    "ScolariLiam", "MartinStewart", "UnderwoodColin", "WalshSteven", "AbrahamVictor", "AlsopDiana" };
@@ -76,22 +77,9 @@ namespace Repository
                 string[] emails = { "CooperJoe@Tigers.com", "RemerDoug@Tigers.com", "ScolariKenny@Tigers.com",
                                 "MartinRobert@Tigers.com", "UnderwoodCarolyn@Tigers.com", "CooperGavin@Tigers.com", "RemerMax@Tigers.com",
                                 "ScolariLiam@Tigers.com", "MartinStewart@Tigers.com", "UnderwoodColin@Tigers.com", "WalshSteven@Tigers.com",
-                                "AbrahamVictor@Tigers.com", "AlsopDiana@Tigers.com" };
-                string[] roles = { "Parent", "Parent", "Parent", "Parent", "Parent", "Player", "Player", "Player", "Player", "Player", "Coach", "AssistantCoach" };
-                Guid teamId;
-                using (var httpClient = new HttpClient())
-                {
-                    var response = await httpClient.PostAsJsonAsync($"http://20.62.247.144:80/api/Team/CreateTeam", "Tigers");
-                    var response2 = await httpClient.PostAsJsonAsync($"http://20.62.247.144:80/api/Team/CreateTeam", "Lions");
-                    var response3 = await httpClient.PostAsJsonAsync($"http://20.62.247.144:80/api/Team/CreateTeam", "Bears");
-                }
-                using (var httpClient = new HttpClient())
-                {
-                    using var response = await httpClient.GetAsync($"http://20.62.247.144:80/api/Team/name/Tigers");
-                    string apiResponse = await response.Content.ReadAsStringAsync();
-                    var team = JsonConvert.DeserializeObject<TeamDto>(apiResponse);
-                    teamId = team.TeamID;
-                }
+                                "AbrahamVictor@Tigers.com", "AlsopDiana@OCSports.com" };
+                string[] roles = { "Parent", "Parent", "Parent", "Parent", "Parent", "Player", "Player", "Player", "Player", "Player", "Head Coach", "Assistant Coach", "League Manager" };
+                Guid teamId = Guid.NewGuid();
 
                 for (int i = 0; i < userNames.Length; i++)
                 {
@@ -103,25 +91,27 @@ namespace Repository
                         SecurityStamp = Guid.NewGuid().ToString(),
                         UserName = userNames[i],
                         TeamID = teamId,
+                        RoleName = roles[i],
                         EmailConfirmed = true
                     };
                     await Users.AddAsync(user);
-
                     await _userManager.CreateAsync(user, passwords[i]);
                     await _userManager.AddToRoleAsync(user, roles[i]);
                 }
 
                 ApplicationUser lmUser = new ApplicationUser
                 {
-                    FullName = "LeagueManager",
+                    FullName = "League Manager",
                     PhoneNumber = "123-456-7890",
                     Email = "outoftheparkcalendar@gmail.com",
                     SecurityStamp = Guid.NewGuid().ToString(),
                     UserName = "LeagueManager",
                     TeamID = Guid.NewGuid(),
+                    RoleName = "League Manager",
                     EmailConfirmed = true
                 };
-                await _userManager.CreateAsync(lmUser, "OOTPLeaMan0-");
+                await Users.AddAsync(lmUser);
+                await _userManager.CreateAsync(lmUser, "OOTPLeaMan0");
                 await _userManager.AddToRoleAsync(lmUser, "League Manager");
 
                 ApplicationUser adminUser = new ApplicationUser
@@ -132,9 +122,11 @@ namespace Repository
                     SecurityStamp = Guid.NewGuid().ToString(),
                     UserName = "Admin",
                     TeamID = Guid.NewGuid(),
+                    RoleName = "Admin",
                     EmailConfirmed = true
                 };
-                await _userManager.CreateAsync(adminUser, "OOTPAdmin0-");
+                await Users.AddAsync(adminUser);
+                await _userManager.CreateAsync(adminUser, "OOTPAdmin0");
                 await _userManager.AddToRoleAsync(adminUser, "Admin");
 
                 await CommitSave();

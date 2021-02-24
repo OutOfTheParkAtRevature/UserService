@@ -49,6 +49,7 @@ namespace UserService
                     options.SignIn.RequireConfirmedAccount = true;
                     options.User.RequireUniqueEmail = true;
                     options.Password.RequiredLength = 8;
+                    options.Password.RequireNonAlphanumeric = false;
                 })
                 .AddEntityFrameworkStores<UserContext>()
                 .AddDefaultTokenProviders();

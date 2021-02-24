@@ -78,7 +78,7 @@ namespace UserService.Controllers
             var callback = Url.Action(nameof(ResetPassword), "Account", new { token, email = user.Email }, Request.Scheme);
             var message = new EmailMessage(new string[] { user.Email }, "Reset password token", callback, null);
             using var httpClient = new HttpClient();
-            var response = await httpClient.PostAsJsonAsync($"api/Message/SendEmail", message);
+            var response = await httpClient.PostAsJsonAsync($"http://20.185.100.57:80/api/Message/SendEmail", message);
             return Ok();
         }
 
