@@ -14,7 +14,7 @@ namespace UserService
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin, League Manager, Head Coach, Assistant Coach, Parent, Player")]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly Mapper _mapper;
@@ -27,14 +27,14 @@ namespace UserService
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin, League Manager, Head Coach, Assistant Coach")]
+        [Authorize]
         public async Task<IActionResult> GetUsers()
         {
             return Ok(await _logic.GetUsers());
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin, League Manager, Head Coach, Assistant Coach, Parent, Player")]
+        [Authorize]
         public async Task<ActionResult<UserDto>> GetUser(string id)
         {
             ApplicationUser user = await _logic.GetUserById(id);
@@ -43,7 +43,7 @@ namespace UserService
         }
 
         [HttpGet("username/{username}")]
-        [Authorize(Roles = "Admin, League Manager, Head Coach, Assistant Coach, Parent, Player")]
+        [Authorize]
         public async Task<ActionResult<UserDto>> GetUserByUsername(string username)
         {
             ApplicationUser user = await _logic.GetUserByUsername(username);
@@ -52,7 +52,7 @@ namespace UserService
         }
 
         [HttpGet("role/{id}")]
-        [Authorize(Roles = "Admin, League Manager, Head Coach")]
+        [Authorize]
         public async Task<IActionResult> GetUserRole(string id)
         {
             ApplicationUser user = await _logic.GetUserById(id);
@@ -62,7 +62,7 @@ namespace UserService
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin, League Manager, Head Coach, Assistant Coach, Parent")]
+        [Authorize]
         public async Task<ActionResult<UserDto>> EditUser(string id, [FromBody] EditUserDto editedUser)
         {
             var token = await HttpContext.GetTokenAsync("access_token");
@@ -76,7 +76,7 @@ namespace UserService
         }
 
         [HttpPut("role/{id}")]
-        [Authorize(Roles = "Admin, League Manager, Head Coach")]
+        [Authorize]
         public async Task<IActionResult> ApproveUserRole(string id, [FromBody] EditUserDto eud)
         {
             var token = await HttpContext.GetTokenAsync("access_token");
@@ -86,7 +86,7 @@ namespace UserService
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin, League Manager, Head Coach, Assistant Coach, Parent")]
+        [Authorize]
         public async Task<IActionResult> DeleteUser(string id)
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
