@@ -16,6 +16,6 @@ namespace Model
         [DisplayName("Carpool ID")]
         public Guid CarpoolID { get; set; }
         public Guid LeagueID { get; set; }
-        public Guid StatLineID { get; set; }
+        public Guid? StatLineID { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using Model;
 
 namespace Models.DataTransfer
 {
@@ -20,6 +21,7 @@ namespace Models.DataTransfer
         public string Email { get; set; }
         [DisplayName("Team ID")]
         public Guid TeamID { get; set; }
+        public TeamDto Team { get; set; }
         [DisplayName("Role Name")]
         public string RoleName { get; set; }
     }
