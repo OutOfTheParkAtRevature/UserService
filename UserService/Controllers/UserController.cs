@@ -27,14 +27,12 @@ namespace UserService
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<IActionResult> GetUsers()
         {
             return Ok(await _logic.GetUsers());
         }
 
         [HttpGet("{id}")]
-        [Authorize]
         public async Task<ActionResult<UserDto>> GetUser(string id)
         {
             ApplicationUser user = await _logic.GetUserById(id);
@@ -43,7 +41,7 @@ namespace UserService
         }
 
         [HttpGet("username/{username}")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<UserDto>> GetUserByUsername(string username)
         {
             ApplicationUser user = await _logic.GetUserByUsername(username);
@@ -52,7 +50,6 @@ namespace UserService
         }
 
         [HttpGet("role/{id}")]
-        [Authorize]
         public async Task<IActionResult> GetUserRole(string id)
         {
             ApplicationUser user = await _logic.GetUserById(id);
@@ -62,7 +59,6 @@ namespace UserService
         }
 
         [HttpPut("{id}")]
-        [Authorize]
         public async Task<ActionResult<UserDto>> EditUser(string id, [FromBody] EditUserDto editedUser)
         {
             var token = await HttpContext.GetTokenAsync("access_token");
@@ -76,7 +72,6 @@ namespace UserService
         }
 
         [HttpPut("role/{id}")]
-        [Authorize]
         public async Task<IActionResult> ApproveUserRole(string id, [FromBody] EditUserDto eud)
         {
             var token = await HttpContext.GetTokenAsync("access_token");
@@ -86,7 +81,6 @@ namespace UserService
         }
 
         [HttpDelete("{id}")]
-        [Authorize]
         public async Task<IActionResult> DeleteUser(string id)
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
