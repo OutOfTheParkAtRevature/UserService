@@ -129,7 +129,7 @@ stages:
     displayName: 'Deploy the containers'
     dependsOn: Build
     jobs:
-    - deployment: Deploy
+    - deployment: DeployAgain
       displayName: Deploy
       pool:
         vmImage: 'ubuntu-latest'
