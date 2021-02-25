@@ -14,7 +14,6 @@ namespace UserService
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly Mapper _mapper;
