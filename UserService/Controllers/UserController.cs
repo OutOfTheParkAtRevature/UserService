@@ -40,7 +40,6 @@ namespace UserService
         }
 
         [HttpGet("username/{username}")]
-        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<UserDto>> GetUserByUsername(string username)
         {
             ApplicationUser user = await _logic.GetUserByUsername(username);
