@@ -125,12 +125,8 @@ stages:
               inputs:
                 command: 'logout'
 
-  - stage: 'Deploy 2'
-    displayName: 'Deploy the containers'
-    dependsOn: Build
-    jobs:
     - deployment: Deploy
-      displayName: Deploy
+      displayName: Deploy Again
       pool:
         vmImage: 'ubuntu-latest'
       environment: 'spike2.default'
