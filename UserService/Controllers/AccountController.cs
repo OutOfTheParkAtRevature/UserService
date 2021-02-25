@@ -26,7 +26,6 @@ namespace UserService.Controllers
         }
 
         [HttpPost("create")]
-        [AllowAnonymous]
         public async Task<IActionResult> Create([FromBody] CreateUserDto cud)
         {
             var userExists = await _userManager.FindByNameAsync(cud.UserName);
@@ -37,7 +36,6 @@ namespace UserService.Controllers
         }
 
         [HttpPost("login")]
-        [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginDto userForAuthentication)
         {
             var user = await _userManager.FindByNameAsync(userForAuthentication.UserName);
@@ -52,7 +50,6 @@ namespace UserService.Controllers
         }
 
         [HttpGet("EmailConfirmation")]
-        [AllowAnonymous]
         public async Task<IActionResult> EmailConfirmation([FromQuery] string email, [FromQuery] string token)
         {
             var user = await _userManager.FindByEmailAsync(email);
@@ -66,7 +63,6 @@ namespace UserService.Controllers
 
         [HttpPost("ForgotPassword")]
         [ValidateAntiForgeryToken]
-        [AllowAnonymous]
         public async Task<IActionResult> ForgotPassword(ForgotPassword forgotPassword)
         {
             if (!ModelState.IsValid)
@@ -84,7 +80,6 @@ namespace UserService.Controllers
 
         [HttpPost("ResetPassword")]
         [ValidateAntiForgeryToken]
-        [AllowAnonymous]
         public async Task<IActionResult> ResetPassword(ResetPassword resetPassword)
         {
             if (!ModelState.IsValid)
