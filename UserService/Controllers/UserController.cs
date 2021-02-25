@@ -27,7 +27,7 @@ namespace UserService
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin, League Manager, Head Coach, Assistant Coach")]
+        //[Authorize(Roles = "Admin, League Manager, Head Coach, Assistant Coach")]
         public async Task<IActionResult> GetUsers()
         {
             return Ok(await _logic.GetUsers());
