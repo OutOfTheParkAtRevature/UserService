@@ -125,8 +125,8 @@ stages:
               inputs:
                 command: 'logout'
 
-  - stage: 'Deploy'
-    displayName: 'Deploy the containers Again'
+  - stage: 'Deploy Again'
+    displayName: 'Deploy the containers'
     dependsOn: Build
     jobs:
     - deployment: Deploy
