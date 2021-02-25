@@ -125,10 +125,6 @@ stages:
               inputs:
                 command: 'logout'
 
-  - stage: 'Deploy 2'
-    displayName: 'Deploy the containers'
-    dependsOn: Build
-    jobs:
     - deployment: DeployAgain
       displayName: Deploy
       pool:
