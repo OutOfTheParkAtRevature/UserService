@@ -125,8 +125,8 @@ stages:
               inputs:
                 command: 'logout'
 
-    - deployment: Deploy
-      displayName: Deploy Again
+    - deployment: DeployAgain
+      displayName: Deploy
       pool:
         vmImage: 'ubuntu-latest'
       environment: 'spike2.default'
