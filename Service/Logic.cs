@@ -110,7 +110,7 @@ namespace Service
             var message = new EmailMessage(new string[] { user.Email }, "Email Confirmation token", callback, null);
             using (var httpClient = new HttpClient())
             {
-                var response = await httpClient.PostAsJsonAsync($"http://localhost:44348/api/Message/SendEmail", message);
+                var response = await httpClient.PostAsJsonAsync($"http://20.185.100.57:80/api/Message/SendEmail", message);
             }
 
             // Pull current high-rank users if any
@@ -129,7 +129,7 @@ namespace Service
             {
                 var adminMessage = new EmailMessage(new string[] { admin.Email }, "New League Manager to confirm", $"User {user.UserName} has been created and has asked for permissions to {cud.RoleName}. Log in to apply the role.", null);
                 using var httpClient = new HttpClient();
-                var response = await httpClient.PostAsJsonAsync($"http://localhost:44348/api/Message/SendEmail", adminMessage);
+                var response = await httpClient.PostAsJsonAsync($"http://20.185.100.57:80/api/Message/SendEmail", adminMessage);
             }
             else if (leagueManager != null)
             {
