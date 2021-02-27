@@ -110,7 +110,7 @@ namespace Service
             var message = new EmailMessage(new string[] { user.Email }, "Email Confirmation token", callback, null);
             using (var httpClient = new HttpClient())
             {
-                var response = await httpClient.PostAsJsonAsync($"http://20.185.100.57:80/api/Message/SendEmail", message);
+                var response = await httpClient.PostAsJsonAsync($"http://40.88.226.19/Message/SendEmail", message);
             }
 
             // Pull current high-rank users if any
