@@ -59,7 +59,7 @@ stages:
               buildContext: $(Build.Repository.LocalPath)
               repository: $(userRepository)
               dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
-              containerRegistry: 'Container Registry Connection'
+              containerRegistry: 'ACR'
               tags: |
                 $(tag)
           
@@ -91,7 +91,7 @@ stages:
                 kubectlVersion: 'latest'
             - task: Kubernetes@1
               inputs:
-                connectionType: 'Kubernetes Service Connection'
+                connectionType: 'kube3'
                 kubernetesServiceEndpoint: 'kube3'
                 namespace: 'default'
                 command: 'login'
@@ -101,7 +101,7 @@ stages:
               inputs:
                 action: createSecret
                 secretName: $(imagePullSecret)
-                dockerRegistryEndpoint: 'Container Registry Connection'
+                dockerRegistryEndpoint: 'ACR'
                 kubernetesServiceConnection: 'kube3'
                 namespace: 'default'
 
