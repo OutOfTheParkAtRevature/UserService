@@ -92,7 +92,7 @@ stages:
             - task: Kubernetes@1
               inputs:
                 connectionType: 'Kubernetes Service Connection'
-                kubernetesServiceEndpoint: 'Kubernetes Cluster Connection Take 2'
+                kubernetesServiceEndpoint: 'kube3'
                 namespace: 'default'
                 command: 'login'
 
@@ -102,14 +102,14 @@ stages:
                 action: createSecret
                 secretName: $(imagePullSecret)
                 dockerRegistryEndpoint: 'Container Registry Connection'
-                kubernetesServiceConnection: 'Kubernetes Cluster Connection Take 2'
+                kubernetesServiceConnection: 'kube3'
                 namespace: 'default'
 
             - task: KubernetesManifest@0
               displayName: Deploy to Kubernetes cluster
               inputs:
                 action: deploy
-                kubernetesServiceConnection: 'Kubernetes Cluster Connection Take 2'
+                kubernetesServiceConnection: 'kube3'
                 namespace: 'default'
                 manifests: |
                   $(Pipeline.Workspace)/manifests/deployment.yml
