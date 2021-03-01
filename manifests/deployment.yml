@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: user-service
-          image: outoftheparkcluster.azurecr.io/user-service
+          image: outoftheparkacr.azurecr.io/user-service
           imagePullPolicy: Always
           ports:
             - containerPort: 443
