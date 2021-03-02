@@ -91,7 +91,7 @@ stages:
                 kubectlVersion: 'latest'
             - task: Kubernetes@1
               inputs:
-                connectionType: 'kube3'
+                connectionType: 'Kubernetes Service Connection'
                 kubernetesServiceEndpoint: 'kube3'
                 namespace: 'default'
                 command: 'login'
