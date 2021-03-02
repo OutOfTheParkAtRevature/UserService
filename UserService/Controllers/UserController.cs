@@ -12,9 +12,9 @@ using System.Threading.Tasks;
 
 namespace UserService
 {
-    [Authorize(Roles = "Admin, League Manager, Head Coach, Assistant Coach, Parent, Player")]
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly Mapper _mapper;
@@ -26,15 +26,15 @@ namespace UserService
             _logic = logic;
         }
 
-        [Authorize(Roles = "Admin, League Manager, Head Coach, Assistant Coach, Parent, Player")]
         [HttpGet]
+        [Authorize(Policy = "RequireAuthenticated")]
         public async Task<IActionResult> GetUsers()
         {
             return Ok(await _logic.GetUsers());
         }
 
-        [Authorize(Roles = "Admin, League Manager, Head Coach, Assistant Coach, Parent, Player")]
         [HttpGet("{id}")]
+        [Authorize(Policy = "RequireAuthenticated")]
         public async Task<ActionResult<UserDto>> GetUser(string id)
         {
             ApplicationUser user = await _logic.GetUserById(id);

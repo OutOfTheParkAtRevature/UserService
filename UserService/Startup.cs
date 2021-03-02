@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -51,6 +52,7 @@ namespace UserService
                     options.Password.RequiredLength = 8;
                     options.Password.RequireNonAlphanumeric = false;
                 })
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<UserContext>()
                 .AddDefaultTokenProviders();
 
@@ -77,6 +79,14 @@ namespace UserService
                     ValidAudience = jwtSettings.GetSection("validAudience").Value,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.GetSection("securityKey").Value))
                 };
+            });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("RequireAuthenticated",
+                     policy => policy.RequireRole("Administrator", "League Manager", "Head Coach", "Assistant Coach", "Parent", "Player"));
+                options.AddPolicy("RequireElevatedRole",
+                     policy => policy.RequireRole("Administrator", "League Manager", "Head Coach"));
             });
         }
 
