@@ -22,8 +22,10 @@ spec:
           image: outoftheparkacr.azurecr.io/user-service
           imagePullPolicy: Always
           ports:
-            - containerPort: 443
+            - containerPort: 80
               name: user-http
+              containerPort: 443
+              name: user-https
 ---
 apiVersion: v1
 kind: Service
@@ -31,7 +33,11 @@ metadata:
   name: user-service-deployment
 spec:
   ports:
-    - name: user-service
+    - name: user-http
+      protocol: TCP
+      port: 80
+      targetPort: 80
+    - name: user-https
       protocol: TCP
       port: 443
       targetPort: 443
