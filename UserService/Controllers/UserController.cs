@@ -12,9 +12,9 @@ using System.Threading.Tasks;
 
 namespace UserService
 {
+    [Authorize(Roles = "Admin, League Manager, Head Coach, Assistant Coach, Parent, Player")]
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly Mapper _mapper;
@@ -26,15 +26,15 @@ namespace UserService
             _logic = logic;
         }
 
+        [Authorize(Roles = "Admin, League Manager, Head Coach, Assistant Coach, Parent, Player")]
         [HttpGet]
-        [Authorize]
         public async Task<IActionResult> GetUsers()
         {
             return Ok(await _logic.GetUsers());
         }
 
+        [Authorize(Roles = "Admin, League Manager, Head Coach, Assistant Coach, Parent, Player")]
         [HttpGet("{id}")]
-        [Authorize]
         public async Task<ActionResult<UserDto>> GetUser(string id)
         {
             ApplicationUser user = await _logic.GetUserById(id);
@@ -42,6 +42,7 @@ namespace UserService
             return Ok(_mapper.ConvertUserToUserDto(user));
         }
 
+        [Authorize(Roles = "Admin, League Manager, Head Coach, Assistant Coach, Parent, Player")]
         [HttpGet("username/{username}")]
         public async Task<ActionResult<UserDto>> GetUserByUsername(string username)
         {
@@ -50,6 +51,7 @@ namespace UserService
             return Ok(_mapper.ConvertUserToUserDto(user));
         }
 
+        [Authorize(Roles = "Admin, League Manager, Head Coach, Assistant Coach, Parent, Player")]
         [HttpGet("role/{id}")]
         public async Task<IActionResult> GetUserRole(string id)
         {
@@ -59,6 +61,7 @@ namespace UserService
             return Ok(await _logic.GetUserRole(id));
         }
 
+        [Authorize(Roles = "Admin, League Manager, Head Coach, Assistant Coach, Parent, Player")]
         [HttpPut("{id}")]
         public async Task<ActionResult<UserDto>> EditUser(string id, [FromBody] EditUserDto editedUser)
         {
@@ -72,6 +75,7 @@ namespace UserService
             return _mapper.ConvertUserToUserDto(await _logic.EditUser(id, editedUser));
         }
 
+        [Authorize(Roles = "Admin, League Manager, Head Coach")]
         [HttpPut("role/{id}")]
         public async Task<IActionResult> ApproveUserRole(string id, [FromBody] EditUserDto eud)
         {
@@ -81,6 +85,7 @@ namespace UserService
             return Ok(await _logic.AddUserRole(id, eud.RoleName, token));
         }
 
+        [Authorize(Roles = "Admin, League Manager, Head Coach")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(string id)
         {
@@ -96,6 +101,7 @@ namespace UserService
             return NotFound("User not found");
         }
 
+        [Authorize(Roles = "Admin, League Manager, Head Coach, Assistant Coach, Parent, Player")]
         [HttpGet("roles")]
         public async Task<IActionResult> GetRoles()
         {
@@ -104,6 +110,7 @@ namespace UserService
             return Ok(roles);
         }
 
+        [Authorize(Roles = "Admin, League Manager, Head Coach, Assistant Coach, Parent, Player")]
         [HttpGet("roles/{id}")]
         public async Task<IActionResult> GetRoleById(string id)
         {
