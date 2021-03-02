@@ -14,7 +14,7 @@ namespace UserService
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin, League Manager, Head Coach, Assistant Coach, Parent, Player")]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly Mapper _mapper;
@@ -34,6 +34,7 @@ namespace UserService
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<UserDto>> GetUser(string id)
         {
             ApplicationUser user = await _logic.GetUserById(id);
