@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 
 namespace UserService
 {
-    [Authorize(AuthenticationSchemes = "Bearer")]
     [Authorize(Roles = "Admin, League Manager, Head Coach, Assistant Coach, Parent, Player")]
     [Route("api/[controller]")]
     [ApiController]
