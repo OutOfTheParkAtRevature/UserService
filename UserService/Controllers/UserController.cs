@@ -27,14 +27,14 @@ namespace UserService
         }
 
         [HttpGet]
-        [Authorize(Policy = "RequireAuthenticated")]
+        [Authorize(Roles = "Admin, League Manager, Head Coach, Assistant Coach, Parent, Player")]
         public async Task<IActionResult> GetUsers()
         {
             return Ok(await _logic.GetUsers());
         }
 
         [HttpGet("{id}")]
-        [Authorize(Policy = "RequireAuthenticated")]
+        [Authorize(Roles = "Admin, League Manager, Head Coach, Assistant Coach, Parent, Player")]
         public async Task<ActionResult<UserDto>> GetUser(string id)
         {
             ApplicationUser user = await _logic.GetUserById(id);

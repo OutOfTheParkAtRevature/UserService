@@ -71,6 +71,7 @@ namespace UserService
             {
                 options.Authority = jwtSettings.GetSection("validIssuer").Value;
                 options.Audience = jwtSettings.GetSection("validAudience").Value;
+                options.RequireHttpsMetadata = false;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
@@ -81,14 +82,6 @@ namespace UserService
                     ValidAudience = jwtSettings.GetSection("validAudience").Value,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.GetSection("securityKey").Value))
                 };
-            });
-
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("RequireAuthenticated",
-                     policy => policy.RequireRole("Administrator", "League Manager", "Head Coach", "Assistant Coach", "Parent", "Player"));
-                options.AddPolicy("RequireElevatedRole",
-                     policy => policy.RequireRole("Administrator", "League Manager", "Head Coach"));
             });
         }
 
