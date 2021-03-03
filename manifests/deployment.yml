@@ -25,6 +25,8 @@ spec:
           ports:
             - containerPort: 80
               name: user-http
+            - containerPort: 443
+              name: user-https
 ---
 apiVersion: v1
 kind: Service
@@ -37,6 +39,10 @@ spec:
       protocol: TCP
       port: 80
       targetPort: 80
+    - name: user-https
+      protocol: TCP
+      port: 443
+      targetPort: 443
   selector:
     app: user-service
-  type: ClusterIP
+  type: LoadBalancer
